@@ -27,7 +27,7 @@ namespace Cores {
 
         public void UpdateInfo () {
             var temp = Mathf.Clamp(Mathf.RoundToInt(m_core.temperature), 0, 99);
-            var speed = Mathf.RoundToInt(m_core.speedPercent);
+            var speed = Mathf.RoundToInt(100f * m_core.temperatureSpeedFactor);
             m_text.text = $"{temp}°C\n{speed}%";
         }
 

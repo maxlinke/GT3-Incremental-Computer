@@ -59,38 +59,29 @@ namespace Cores {
 
         public int index { get; private set; }
         public State state { get; private set; }
-        public float temperature { get; private set; }
-        public float speedPercent { get {
-            return speedMultiplier * 100;
-        } }
 
-        private float speedMultiplier { get {
+        public bool isRunning => isUnlocked && GameState.current.running;
+        public float temperature => state.temperature;
+        public float temperatureSpeedFactor { get {
             if(!isRunning){
                 return 0f;
             }
+            // TODO
             return 1f;
-            // maybe just lerp it?
-            // if(temperature < 50) return 1f;
-            // if(temperature < 60) return 0.8f;
-            // if(temperature < 70) return 0.6f;
-            // if(temperature < 80f) return 0.4f;
-            // if(temperature
         } }
 
-        private bool _isUnlocked = false;
         public bool isUnlocked { 
             get {
-                return _isUnlocked;
+                return state.unlocked;
             } set {
-                if(_isUnlocked != value){
-                    _isUnlocked = value;
+                if(state.unlocked != value){
+                    state.unlocked = value;
                     onUnlockStateChanged.OnNext(value);
                     UpdateElementColors();
                 }
             }
         }
 
-        public bool isRunning => isUnlocked && GameState.current.running;
 
         Slot[] m_slots;
 
@@ -111,6 +102,10 @@ namespace Cores {
         void OnGameStateChanged (GameState gameState) {
             this.state = gameState.coreStates[this.index];
             OnRunStateChanged(gameState.running);
+            onUnlockStateChanged.OnNext(isUnlocked);
+            // components...
+            // TEMP
+            m_processorTemplate.SetGOActive(false);
         }
 
         void OnRunStateChanged (bool running) {
@@ -127,7 +122,7 @@ namespace Cores {
         }
 
         void AdvanceClockAndExecute () {
-            var timer = state.cycleTimer + (Time.deltaTime * speedMultiplier) * TEMP_CYCLES_PER_SECOND;
+            var timer = state.cycleTimer + (Time.deltaTime * temperatureSpeedFactor) * TEMP_CYCLES_PER_SECOND;
             var cycles = (int)timer;
             for(int i=0; i<cycles; i++){
                 var processorState = !state.isOnProcessorCycle;

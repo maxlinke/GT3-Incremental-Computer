@@ -9,7 +9,7 @@ namespace Cores {
 
         [SerializeField, RedIfEmpty] Text m_text;
 
-        public ID id { get; private set; }
+        public ID id { get; private set; }  // TODO needs to go in state. maybe make this visualprocessor like visualtask
 
         void OnEnable () {
             this.id = ID.GetNext();
