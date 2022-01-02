@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Tasks {
 
-    public struct Task {
+    public class Task {
 
         // TODO have a central upgrades class that handles that
 
@@ -36,9 +36,9 @@ namespace Tasks {
 
         public string name { get {
             switch(level){
-                case 0: return "Task";
-                case 1: return "Super Task";
-                case 2: return "Hyper Task";
+                case 0: return "Task";          // => 1
+                case 1: return "Super Task";    // => 128
+                case 2: return "Hyper Task";    // => 65536
                 default: throw new System.ArgumentException($"Unsupported Task Level \"{level}\"!");
             }
         } }

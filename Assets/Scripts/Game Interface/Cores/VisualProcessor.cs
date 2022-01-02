@@ -3,29 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cores {
+namespace Cores.Components {
 
-    public class VisualProcessor : MonoBehaviour {
+    public class VisualProcessor : VisualCoreComponent<Cores.Components.Processor> {
 
-        [SerializeField, RedIfEmpty] Text m_text;
+        [SerializeField, RedIfEmpty] Image m_usageImage;
 
-        public ID id { get; private set; }  // TODO needs to go in state. maybe make this visualprocessor like visualtask
+        public Cores.Components.Processor processor { get; private set; }
 
-        void OnEnable () {
-            this.id = ID.GetNext();
+        public override int slotSize => processor.slotSize;
+
+        bool m_executing;
+        float m_offTime;
+
+        public override void Initialize(Cores.Components.Processor value) {
+            this.processor = value;
+            m_usageImage.SetGOActive(false);
+            m_text.text = $"PRC {processor.id}";
         }
 
-        void OnDisable () {
-            ID.ReturnId(this.id);
-            this.id = null;
-        }
-
-        void Start () {
-            
+        public override void Execute(float expectedDuration) {
+            processor.Execute(out var usageLevel);
+            m_usageImage.SetGOActive(true);
+            m_usageImage.fillAmount = usageLevel;
+            m_executing = true;
+            m_offTime = Time.time + 0.5f * expectedDuration;
         }
 
         void Update () {
-            
+            if(m_executing){
+                if(Time.time > m_offTime){
+                    m_usageImage.SetGOActive(false);
+                    m_executing = false;
+                }
+            }
         }
 
     }

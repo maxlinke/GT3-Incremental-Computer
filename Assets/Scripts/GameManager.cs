@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour {
     void Start () {
         Application.targetFrameRate = 60;
         InitGameComponents();
-        InitGameState();
         if(!GameState.current.hasRun){
             InputConsole.instance.PrintMessage(
                 $"Welcome! Type \"{Command.runCommandId}\" to start execution of the program. " + 
@@ -33,19 +32,6 @@ public class GameManager : MonoBehaviour {
         if(m_debugCurrencyGainPerFrame != 0){
             GameState.current.currency += m_debugCurrencyGainPerFrame;
         }
-    }
-
-    void OnApplicationQuit () {
-        // SaveData.TrySaveToDisk(autoSaveFileName, isAutoSave: true, out _);
-    }
-
-    void InitGameState () {
-        // if(Application.isEditor && m_editorStartFreshEveryTime){
-        // }else{
-        //     if(!SaveData.TryLoadFromDisk(autoSaveFileName, out var autoSaveError)){
-        //         Debug.LogWarning(autoSaveError);
-        //     }
-        // }
     }
 
     void InitGameComponents () {

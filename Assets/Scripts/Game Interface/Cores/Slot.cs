@@ -17,11 +17,6 @@ namespace Cores {
             m_text.text = value;
         } }
 
-        public bool isFree {
-            get => gameObject.activeSelf;
-            set => gameObject.SetActive(value);
-        }
-
         public RectTransform rectTransform => (RectTransform)transform;
 
     }
