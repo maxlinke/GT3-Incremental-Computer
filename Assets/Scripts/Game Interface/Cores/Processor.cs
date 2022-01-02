@@ -1,32 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Cores {
 
-    public class Processor : MonoBehaviour {
+    [System.Serializable]
+    public class Processor {
 
-        [SerializeField, RedIfEmpty] Text m_text;
+        [SerializeField] public ID id;
+        [SerializeField] public int level;
+        [SerializeField] public int upgrades;
 
-        public ID id { get; private set; }  // TODO needs to go in state. maybe make this visualprocessor like visualtask
-
-        void OnEnable () {
-            this.id = ID.GetNext();
+        public Processor (ID id) {
+            this.id = id;
+            level = 0;
+            upgrades = 0;
         }
 
-        void OnDisable () {
-            ID.ReturnId(this.id);
-            this.id = null;
-        }
-
-        void Start () {
-            
-        }
-
-        void Update () {
-            
-        }
+        public int slotSize { get {
+            switch(level){
+                case 0: return 1;
+                case 1: return 1;
+                case 2: return 2;
+                case 3: return 3;
+                default: throw new System.ArgumentOutOfRangeException($"Unuspported Processor Level \"{level}\"!");
+            }
+        } }
 
     }
 

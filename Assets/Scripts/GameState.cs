@@ -9,12 +9,13 @@ public class GameState {
 
     public const string CURRENCY_SYMBOL = "CR";
 
-    public GameState () { 
+    public GameState () {
         m_currency = 0;
         m_running = false;
+        m_idQueue = ID.GetNewIDQueue();
         m_tasks = new List<Tasks.Task>();
         m_coreStates = new Core.State[CoreDisplay.NUMBER_OF_CORES];
-        m_coreStates[0] = Core.State.GetNewStateForInitialCore();
+        m_coreStates[0] = Core.State.GetNewStateForInitialCore(() => ID.GetNext(m_idQueue));
         for(int i=1; i<m_coreStates.Length; i++){
             m_coreStates[i] = new Core.State();
         }
@@ -41,6 +42,8 @@ public class GameState {
 
     [SerializeField] private int m_currency;
     [SerializeField] private bool m_running;
+    [SerializeField] private bool m_hasRun;
+    [SerializeField] private List<ID> m_idQueue;
     [SerializeField] private List<Task> m_tasks;
     [SerializeField] private Core.State[] m_coreStates;
 
@@ -51,10 +54,12 @@ public class GameState {
 
     public bool running {
         get => m_running;
-        set => OnValueSet(this, value, ref m_running, onRunStateChanged);
+        set { OnValueSet(this, value, ref m_running, onRunStateChanged); m_hasRun |= value; }
     }
 
+    public bool hasRun => m_hasRun;
     public IList<Task> tasks => m_tasks;
     public IReadOnlyList<Core.State> coreStates => m_coreStates;
+    public IList<ID> idQueue => m_idQueue;
 
 }

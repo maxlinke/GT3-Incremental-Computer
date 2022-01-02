@@ -1,25 +1,34 @@
+using UnityEngine;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class ID {
 
-    private static Queue<ID> ids;
+    public const int ID_COUNT = 256;
 
-    static ID () {
-        ids = new Queue<ID>();
-        for(int i=0; i<256; i++){
-            ids.Enqueue(new ID(i));
+    public static List<ID> GetNewIDQueue () {
+        var output = new List<ID>();
+        for(int i=0; i<ID.ID_COUNT; i++){
+            output.Add(new ID(i));
         }
+        return output;
     }
 
     public static ID GetNext () {
-        return ids.Dequeue();
+        return GetNext(GameState.current.idQueue);
+    }
+
+    public static ID GetNext (IList<ID> ids) {
+        var output = ids[0];
+        ids.RemoveAt(0);
+        return output;
     }
 
     public static void ReturnId (ID id) {
-        ids.Enqueue(id);
+        GameState.current.idQueue.Add(id);
     }
 
-    private readonly int m_id;
+    [SerializeField] private int m_id;
 
     private ID (int id) {
         this.m_id = id;

@@ -15,18 +15,22 @@ namespace Cores {
             [SerializeField] public float temperature;
             [SerializeField] public float cycleTimer;
             [SerializeField] public bool isOnProcessorCycle;
+            [SerializeField] public List<Processor> processors;
+            // TODO schedulers
+            // TODO coolers
 
             public State () {
                 unlocked = false;
                 temperature = DEFAULT_TEMPERATURE;
                 cycleTimer = 0;
                 isOnProcessorCycle = START_ON_PROCESSOR_CYCLE;
+                processors = new List<Processor>();
             }
 
-            public static State GetNewStateForInitialCore () {
+            public static State GetNewStateForInitialCore (System.Func<ID> getNewId) {
                 var output = new State();
                 output.unlocked = true;
-                // TODO basic processor
+                output.processors.Add(new Processor(getNewId()));
                 // TODO basic scheduler
                 return output;
             }
@@ -55,7 +59,7 @@ namespace Cores {
 
         [Header("The other components")]
         [SerializeField, RedIfEmpty] Slot m_slotTemplate;
-        [SerializeField, RedIfEmpty] Processor m_processorTemplate;
+        [SerializeField, RedIfEmpty] VisualProcessor m_processorTemplate;
 
         public int index { get; private set; }
         public State state { get; private set; }
@@ -118,6 +122,9 @@ namespace Cores {
             if(isRunning){
                 AdvanceClockAndExecute();
             }
+        }
+
+        void FixedUpdate () {
             Cooldown();
         }
 

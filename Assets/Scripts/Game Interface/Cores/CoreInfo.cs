@@ -25,7 +25,11 @@ namespace Cores {
             m_text.color = color;
         }
 
-        public void UpdateInfo () {
+        void LateUpdate () {
+            UpdateText();
+        }
+
+        void UpdateText () {
             var temp = Mathf.Clamp(Mathf.RoundToInt(m_core.temperature), 0, 99);
             var speed = Mathf.RoundToInt(100f * m_core.temperatureSpeedFactor);
             m_text.text = $"{temp}°C\n{speed}%";
