@@ -25,7 +25,7 @@ public class TaskQueue : MonoBehaviour {
         m_activeVisualTasks = new List<VisualTask>();
         m_pooledVisualTasks = new Queue<VisualTask>();
         SpawnAndPoolVisTasks();
-        GameState.onGameStateChanged.Subscribe(OnGameStateChanged);
+        GameState.onGameStateChanged += OnGameStateChanged;
         OnGameStateChanged(GameState.current);
     }
 

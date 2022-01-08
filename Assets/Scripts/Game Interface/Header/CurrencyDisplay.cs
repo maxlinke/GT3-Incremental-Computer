@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UniRx;
 
 namespace GameInterfaceElements.Header {
 
@@ -18,8 +17,8 @@ namespace GameInterfaceElements.Header {
         System.Text.StringBuilder m_niceNumberStringBuilder;
 
         public void Initialize () {
-            GameState.onGameStateChanged.Subscribe(OnGameStateChanged);
-            GameState.onCurrencyChanged.Subscribe(OnCurrencyChanged);
+            GameState.onGameStateChanged += OnGameStateChanged;
+            GameState.onCurrencyChanged += OnCurrencyChanged;
             OnGameStateChanged(GameState.current);
             OnCurrencyChanged(GameState.current.currency);
             m_niceNumberStringBuilder = new System.Text.StringBuilder();

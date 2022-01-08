@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Commands;
+using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -18,6 +17,11 @@ public class GameManager : MonoBehaviour {
     void Start () {
         Application.targetFrameRate = 60;
         InitGameComponents();
+        // TODO bring the auto save thing back
+        // full screen popup
+        // "Auto save found. Continue from last time? [y] yes | [n] no"
+        // input handler provides y and n key events
+        // and also doesn't output any other events while the popup is open
         if(!GameState.current.hasRun){
             InputConsole.instance.PrintMessage(
                 $"Welcome! Type \"{Command.runCommandId}\" to start execution of the program. " + 
@@ -68,13 +72,13 @@ public class GameManagerEditor : Editor {
             }
             if(GUILayout.Button("add random")){
                 TaskQueue.instance.TryAddTask(new Tasks.Task(
-                    level: Random.Range(0, 3), 
-                    count: Random.Range(1, 1025)
+                    level: UnityEngine.Random.Range(0, 3), 
+                    count: UnityEngine.Random.Range(1, 1025)
                 ));
             }
             if(GUILayout.Button("take random")){
                 if(TaskQueue.instance.taskCount > 0){
-                    TaskQueue.instance.TakeTask(Random.Range(0, TaskQueue.instance.taskCount));
+                    TaskQueue.instance.TakeTask(UnityEngine.Random.Range(0, TaskQueue.instance.taskCount));
                 }
             }
         }

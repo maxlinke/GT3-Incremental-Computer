@@ -11,16 +11,16 @@ namespace Cores {
 
         public RectTransform rectTransform => (RectTransform)transform;
 
-        Core m_core;
+        CoreView m_coreView;
 
-        public void Initialize (Core core) {
-            this.m_core = core;
-            core.onUnlockStateChanged.Subscribe(OnUnlockStateChanged);
-            OnUnlockStateChanged(core.isUnlocked);
+        public void Initialize (CoreView coreView) {
+            this.m_coreView = coreView;
+            coreView.onUnlockStateChanged += OnUnlockStateChanged;
+            OnUnlockStateChanged(coreView.core.unlocked);
         }
 
         void OnUnlockStateChanged (bool value) {
-            var color = Core.GetUnlockStateColor(m_core.isUnlocked);
+            var color = CoreView.GetUnlockStateColor(value);
             m_frame.color = color;
             m_text.color = color;
         }
@@ -30,9 +30,14 @@ namespace Cores {
         }
 
         void UpdateText () {
-            var temp = Mathf.Clamp(Mathf.RoundToInt(m_core.temperature), 0, 99);
-            var speed = Mathf.RoundToInt(100f * m_core.temperatureSpeedFactor);
-            m_text.text = $"{temp}°C\n{speed}%";
+            string temp;
+            if(m_coreView.core.temperature < -9 || m_coreView.core.temperature > 99){
+                temp = "ERR";
+            }else{
+                temp = $"{Mathf.RoundToInt(m_coreView.core.temperature)}°C";
+            }
+            string speed = $"{Mathf.RoundToInt(100f * m_coreView.core.temperatureSpeedFactor)}%";
+            m_text.text = $"{temp}°C\n{speed}";
         }
 
     }

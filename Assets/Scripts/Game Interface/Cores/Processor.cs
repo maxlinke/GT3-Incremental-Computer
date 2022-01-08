@@ -1,9 +1,9 @@
 namespace Cores.Components {
 
     [System.Serializable]
-    public class Processor : CoreComponent{
+    public class Processor : CoreComponent {
 
-        public Processor (ID id) : base(id) { }
+        public Processor (Core core, ID id, int slotIndex) : base(core, id, slotIndex) { }
 
         public override int slotSize { get {
             switch(level){
@@ -15,7 +15,7 @@ namespace Cores.Components {
             }
         } }
 
-        public void Execute (out float usageLevel) {
+        public void Execute () {
             var taskQueue = TaskQueue.instance;
             var totalSpace = 1; // TODO
             var spaceRemaining = totalSpace; 
@@ -26,8 +26,11 @@ namespace Cores.Components {
                     task.Execute();
                 }
             }
-            usageLevel = 1f - ((float)spaceRemaining / totalSpace);
+            var usageLevel = 1f - ((float)spaceRemaining / totalSpace);
+            onExecute(usageLevel);
         }
+
+        public event System.Action<float> onExecute = delegate {};
 
     }
 

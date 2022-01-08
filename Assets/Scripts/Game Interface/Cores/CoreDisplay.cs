@@ -10,7 +10,7 @@ public class CoreDisplay : MonoBehaviour {
     public const int NUMBER_OF_CORES = NUMBER_OF_CORES_HORIZONTAL * NUMBER_OF_CORES_VERTICAL;
 
     [SerializeField, RedIfEmpty] Canvas m_canvas;
-    [SerializeField, RedIfEmpty] Core m_coreTemplate;
+    [SerializeField, RedIfEmpty] CoreView m_coreTemplate;
     [SerializeField, RedIfEmpty] CoreInfoDisplay m_infoDisplay;
 
     public static CoreDisplay instance { get; private set; }
@@ -20,7 +20,7 @@ public class CoreDisplay : MonoBehaviour {
         set => m_canvas.enabled = value;
     }
 
-    Core[] m_cores;
+    CoreView[] m_cores;
 
     public void Initialize () {
         instance = this;
@@ -28,13 +28,13 @@ public class CoreDisplay : MonoBehaviour {
         m_infoDisplay.Initialize(this);
     }
 
-    public Core GetCore (int index) => m_cores[index];
+    public CoreView GetCore (int index) => m_cores[index];
 
-    public IEnumerable<Core> Cores => m_cores;
+    public IEnumerable<CoreView> Cores => m_cores;
 
     void SpawnCores () {
         m_coreTemplate.SetGOActive(false);
-        m_cores = new Core[NUMBER_OF_CORES];
+        m_cores = new CoreView[NUMBER_OF_CORES];
         SpawnThingsAndAlignLikeCores((i) => {
             var newCore = Instantiate(m_coreTemplate, m_coreTemplate.transform.parent);
             newCore.SetGOActive(true);

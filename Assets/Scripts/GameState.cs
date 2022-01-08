@@ -14,18 +14,18 @@ public class GameState {
         m_running = false;
         m_idQueue = ID.GetNewIDQueue();
         m_tasks = new List<Tasks.Task>();
-        m_coreStates = new Core.State[CoreDisplay.NUMBER_OF_CORES];
-        m_coreStates[0] = Core.State.GetNewStateForInitialCore(() => ID.GetNext(m_idQueue));
-        for(int i=1; i<m_coreStates.Length; i++){
-            m_coreStates[i] = new Core.State();
+        m_cores = new Core[CoreDisplay.NUMBER_OF_CORES];
+        m_cores[0] = Core.GetInitialCore(() => ID.GetNext(m_idQueue));
+        for(int i=1; i<m_cores.Length; i++){
+            m_cores[i] = new Core();
         }
     }
 
-    private static void OnValueSet<T> (GameState state, T value, ref T fieldValue, Subject<T> onUpdated) {
+    private static void OnValueSet<T> (GameState state, T value, ref T fieldValue, System.Action<T> onUpdated) {
         if(!value.Equals(fieldValue)){
             fieldValue = value;
             if(state.Equals(current)){
-                onUpdated.OnNext(value);
+                onUpdated(value);
             }
         }
     }
@@ -33,19 +33,19 @@ public class GameState {
     private static GameState _current = new GameState();
     public static GameState current {
         get => _current;
-        set => OnValueSet(value, value, ref _current, onGameStateChanged);
+        set => OnValueSet(value, value, ref _current, (gs) => {onGameStateChanged(gs); Debug.Log("gs change");});
     }
 
-    public static Subject<GameState> onGameStateChanged { get; private set; } = new Subject<GameState>();
-    public static Subject<int> onCurrencyChanged { get; private set; } = new Subject<int>();
-    public static Subject<bool> onRunStateChanged { get; private set; } = new Subject<bool>();
+    public static event System.Action<GameState> onGameStateChanged = delegate {};
+    public static event System.Action<int> onCurrencyChanged = delegate {};
+    public static event System.Action<bool> onRunStateChanged = delegate {};
 
     [SerializeField] private int m_currency;
     [SerializeField] private bool m_running;
     [SerializeField] private bool m_hasRun;
     [SerializeField] private List<ID> m_idQueue;
     [SerializeField] private List<Task> m_tasks;
-    [SerializeField] private Core.State[] m_coreStates;
+    [SerializeField] private Core[] m_cores;
 
     public int currency {
         get => m_currency;
@@ -59,7 +59,7 @@ public class GameState {
 
     public bool hasRun => m_hasRun;
     public IList<Task> tasks => m_tasks;
-    public IReadOnlyList<Core.State> coreStates => m_coreStates;
+    public IReadOnlyList<Core> cores => m_cores;
     public IList<ID> idQueue => m_idQueue;
 
 }

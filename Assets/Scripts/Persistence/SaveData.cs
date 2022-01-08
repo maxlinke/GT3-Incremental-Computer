@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
 [System.Serializable]
 public class SaveData {
 
-    const int CURRENT_VERSION = 3;
+    const int CURRENT_VERSION = 4;
 
     private static string saveFolderPath => $"{Application.persistentDataPath}/Saves";
 
@@ -84,10 +82,12 @@ public class SaveData {
         try{
             GameState.current = m_gameState;
             if(this.m_isAutoSave){
-                var lastSaveTime = System.DateTime.FromBinary(m_timeStampBinary);
-                var timeSpan = System.DateTime.Now - lastSaveTime;
-                Debug.Log($"TODO this\n{timeSpan}");
-                // TODO give (a little bit) of currency, depending on the processor output last time
+                if(GameState.current.running){
+                    var lastSaveTime = System.DateTime.FromBinary(m_timeStampBinary);
+                    var timeSpan = System.DateTime.Now - lastSaveTime;
+                    // TODO give (a little bit) of currency, depending on the processor output last time
+                    Debug.Log($"TODO this\n{timeSpan}");
+                }
             }
             errorMessage = default;
             return true;

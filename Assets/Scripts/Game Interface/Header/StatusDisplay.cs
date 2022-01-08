@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UniRx;
 
 namespace GameInterfaceElements.Header {
 
@@ -12,8 +11,8 @@ namespace GameInterfaceElements.Header {
         bool m_updateDisplay;
 
         public void Initialize () {
-            GameState.onGameStateChanged.Subscribe((gs) => OnRunStateChanged(gs.running));
-            GameState.onRunStateChanged.Subscribe(OnRunStateChanged);
+            GameState.onGameStateChanged += (gs) => OnRunStateChanged(gs.running);
+            GameState.onRunStateChanged += OnRunStateChanged;
             OnRunStateChanged(GameState.current.running);
         }
 
