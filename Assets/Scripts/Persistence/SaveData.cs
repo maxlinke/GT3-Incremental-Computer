@@ -4,7 +4,7 @@ using System.IO;
 [System.Serializable]
 public class SaveData {
 
-    const int CURRENT_VERSION = 4;
+    const int CURRENT_VERSION = 5;
 
     private static string saveFolderPath => $"{Application.persistentDataPath}/Saves";
 

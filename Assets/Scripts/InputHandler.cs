@@ -1,18 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 
 public class InputHandler : MonoBehaviour {
 
-    readonly Subject<Event> m_onKeyEvent = new Subject<Event>();
+    private readonly Subject<Event> m_onKeyEvent = new Subject<Event>();
 
     public static Subject<char> onCharEntered { get; private set; } = new Subject<char>();
     public static Subject<KeyCode> onTextEditCommand { get; private set; } = new Subject<KeyCode>();
     public static Subject<Vector2> onScrollCommand { get; private set; } = new Subject<Vector2>();
     public static Subject<Vector2> onDirection { get; private set; } = new Subject<Vector2>();
-
-    public static event System.Action onCancel = delegate {};
+    public static Subject<Event> onCancel { get; private set; } = new Subject<Event>();
 
     public void Initialize () {
         InitObservables();
@@ -30,7 +27,7 @@ public class InputHandler : MonoBehaviour {
             .Where(evt => HasModifier(evt, EventModifiers.Control))
             .Where(evt => evt.keyCode == KeyCode.C)
             .Subscribe(evt => {
-                onCancel.Invoke();
+                onCancel.OnNext(evt);
                 evt.Use();
             });
         m_onKeyEvent

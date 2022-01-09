@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UniRx;
 
 namespace Cores {
 
@@ -37,7 +36,7 @@ namespace Cores {
                 temp = $"{Mathf.RoundToInt(m_coreView.core.temperature)}°C";
             }
             string speed = $"{Mathf.RoundToInt(100f * m_coreView.core.temperatureSpeedFactor)}%";
-            m_text.text = $"{temp}°C\n{speed}";
+            m_text.text = $"{temp}\n{speed}";
         }
 
     }

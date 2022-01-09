@@ -44,23 +44,30 @@ public class InputConsole : MonoBehaviour, IScrollHandler {
         m_textTemplate.transform.SetParent(this.transform, false);
         m_textTemplate.SetGOActive(false);
         Clear(true);
-        InputHandler.onCancel += AbortInput;
+        InputHandler.onCancel
+            .Where(_ => !PopupDialogue.IsOrWasJustVisible)
+            .Subscribe(_ => AbortInput());
         InputHandler.onCharEntered
+            .Where(_ => !PopupDialogue.IsOrWasJustVisible)
             .Where(ch => (m_inputBuffer.Length < m_maxCommandLength))
             .Subscribe(AppendChar);
         InputHandler.onTextEditCommand
+            .Where(_ => !PopupDialogue.IsOrWasJustVisible)
             .Where(keyCode => (m_inputBuffer.Length > 0))
             .Where(keyCode => (keyCode == KeyCode.Backspace))
             .Subscribe(RemoveChar);
         InputHandler.onTextEditCommand
+            .Where(_ => !PopupDialogue.IsOrWasJustVisible)
             .Where(keyCode => ((keyCode == KeyCode.Return) || (keyCode == KeyCode.KeypadEnter)))
             .Subscribe(keyCode => SubmitLine());
         InputHandler.onDirection
+            .Where(_ => !PopupDialogue.IsOrWasJustVisible)
             .Where(dir => (dir.y != 0 && dir.x == 0))
             .Select(dir => (int)(dir.y) + m_shownMemoryCommandIndex)
             .Where(newIndex => HasMemoryCommandAtIndex(newIndex))
             .Subscribe(UseMemoryCommandAtIndex);
         InputHandler.onScrollCommand
+            .Where(_ => !PopupDialogue.IsOrWasJustVisible)
             .Where(dir => (dir.y != 0 && dir.x == 0))
             .Select(dir => (int)(dir.y))
             .Subscribe(offset => ScrollWithOffset(offset * m_scrollSpeed));

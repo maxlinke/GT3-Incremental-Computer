@@ -1,6 +1,5 @@
 using UnityEngine;
 using Commands;
-using System;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,17 +10,13 @@ public class GameManager : MonoBehaviour {
 
     [SerializeField, RedIfEmpty] InputHandler m_inputHandler;
     [SerializeField, RedIfEmpty] GameInterface m_interface;
+    [SerializeField, RedIfEmpty] PopupDialogue m_popupDialogue;
 
     [SerializeField] int m_debugCurrencyGainPerFrame;
 
     void Start () {
         Application.targetFrameRate = 60;
         InitGameComponents();
-        // TODO bring the auto save thing back
-        // full screen popup
-        // "Auto save found. Continue from last time? [y] yes | [n] no"
-        // input handler provides y and n key events
-        // and also doesn't output any other events while the popup is open
         if(!GameState.current.hasRun){
             InputConsole.instance.PrintMessage(
                 $"Welcome! Type \"{Command.runCommandId}\" to start execution of the program. " + 
@@ -30,6 +25,11 @@ public class GameManager : MonoBehaviour {
                 $"Have fun!\n"
             );
         }
+        // TODO bring the auto save thing back
+        // full screen popup
+        // "Auto save found. Continue from last time? [y] yes | [n] no"
+        // input handler provides y and n key events
+        // and also doesn't output any other events while the popup is open
     }
 
     void Update () {
@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour {
     void InitGameComponents () {
         m_inputHandler.Initialize();
         m_interface.Initialize();
+        m_popupDialogue.Initialize();
     }
 
 }
