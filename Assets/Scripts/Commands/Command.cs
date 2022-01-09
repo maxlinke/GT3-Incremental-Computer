@@ -10,10 +10,11 @@ namespace Commands {
 
         private static List<Command> commands = new List<Command>(){
             new RunCommand(){id = runCommandId},
-            new HaltCommand(){id = "halt"}, 
+            new HaltCommand(){id = "halt"},
             new ClearCommand(){id = "clear"},
             new ListCommand(){id = listCommandId},
             new HelpCommand(){id = helpCommandId},
+            new ShopCommand(){id = "shop"},
             new SaveCommand(){id = "save"},
             new LoadCommand(){id = "load"},
             

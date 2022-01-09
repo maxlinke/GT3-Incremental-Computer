@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cores;
@@ -24,6 +23,7 @@ public class CoreDisplay : MonoBehaviour {
 
     public void Initialize () {
         instance = this;
+        gameObject.SetActive(true);
         SpawnCores();
         m_infoDisplay.Initialize(this);
     }

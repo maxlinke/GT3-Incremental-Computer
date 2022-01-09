@@ -3,6 +3,9 @@ using UniRx;
 
 public class InputHandler : MonoBehaviour {
 
+    public const string CANCEL_COMMAND = "Ctrl+C";
+    public const string SCROLL_COMMAND = "Ctrl+ArrowKey";
+
     private readonly Subject<Event> m_onKeyEvent = new Subject<Event>();
 
     public static Subject<char> onCharEntered { get; private set; } = new Subject<char>();
