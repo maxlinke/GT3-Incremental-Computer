@@ -26,7 +26,6 @@ public class MainDisplay : MonoBehaviour {
     public static void ShowShop () {
         instance.m_coreDisplay.visible = false;
         instance.m_shopDisplay.visible = true;
-        instance.m_shopDisplay.ShowPage(ShopDisplay.Page.Unlocks);
     }
 
 }

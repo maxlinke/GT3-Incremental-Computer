@@ -7,6 +7,7 @@ namespace Commands {
         public const string runCommandId = "run";
         public const string listCommandId = "list";
         public const string helpCommandId = "help";
+        public const string shopCommandId = "shop";
 
         private static List<Command> commands = new List<Command>(){
             new RunCommand(){id = runCommandId},
@@ -14,10 +15,12 @@ namespace Commands {
             new ClearCommand(){id = "clear"},
             new ListCommand(){id = listCommandId},
             new HelpCommand(){id = helpCommandId},
-            new ShopCommand(){id = "shop"},
+            new ShopCommand(){id = shopCommandId},
+            new BuyCommand(){id = "buy"},
+            // sell
+            // move
             new SaveCommand(){id = "save"},
             new LoadCommand(){id = "load"},
-            
             new ExitCommand(){id = "exit"},
         };
 
