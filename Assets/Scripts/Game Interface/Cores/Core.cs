@@ -145,6 +145,13 @@ namespace Cores {
             // TODO cooldown
         }
 
+        public void Unlock () {
+            if(!unlocked){
+                unlocked = true;
+                onUnlocked();
+            }
+        }
+
     }
 
 }
