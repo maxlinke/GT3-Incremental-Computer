@@ -17,6 +17,7 @@ namespace Cores.Components {
         bool m_executing;
 
         public override void Initialize (Processor processor) {
+            base.Initialize(processor);
             this.processor = processor;
             processor.onExecute += OnExecute;
             m_usageImage.SetGOActive(false);

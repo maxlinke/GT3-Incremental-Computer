@@ -16,6 +16,7 @@ namespace Cores.Components {
         bool m_newImageState;
 
         public override void Initialize (Scheduler scheduler) {
+            base.Initialize(scheduler);
             this.scheduler = scheduler;
             scheduler.onExecute += OnExecute;
             m_blipImage.SetGOActive(false);

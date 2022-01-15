@@ -35,7 +35,7 @@ namespace Cores.Components {
             [field: SerializeField] public int slotSize { get; private set; }
             [field: SerializeField] public int maxTasksPerCycle { get; private set; }
 
-            public static void EnsureLevelsInitialized (Shops.ComponentShop shop) {
+            public static void EnsureLevelsInitialized (Shops.Shop shop) {
                 if(levels == null){
                     var list = new List<Level>();
                     foreach(var proc in shop.processorPurchases){

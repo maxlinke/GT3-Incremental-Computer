@@ -14,34 +14,17 @@ public class ShopDisplay : MonoBehaviour {
     [SerializeField, RedIfEmpty] Text m_pageText;
 
     [Header("Shops")]
-    [SerializeField, RedIfEmpty] Shop[] m_shops;
+    [SerializeField, RedIfEmpty] Shop m_shop;
 
     public bool visible {
         get => m_canvas.enabled;
         set {
             var changed = (value != visible);
             m_canvas.enabled = value;
-            if(changed){
-                if(visible && m_shops.Length > 0){
-                    ShowShop(m_shops[0]);
-                }else{
-                    ShowShop(null);
-                }
+            if(changed && visible){
+                ShowPage(0);
             }
         }
-    }
-
-    public Shop currentShop { get; private set; }
-
-    int shopCount => m_shops.Length;
-
-    int GetIndexOfShop (Shop shop) { 
-        for(int i=0; i<m_shops.Length; i++){
-            if(m_shops[i] == shop){
-                return i;
-            }
-        }
-        return -1;
     }
 
     public void Initialize () {
@@ -50,74 +33,52 @@ public class ShopDisplay : MonoBehaviour {
         InputHandler.onScrollCommand
             .Where(_ => visible)
             .Where(dir => dir.x > 0)
-            .Subscribe(_ => NextShop());
+            .Subscribe(_ => NextPage());
         InputHandler.onScrollCommand
             .Where(_ => visible)
             .Where(dir => dir.x < 0)
-            .Subscribe(_ => PreviousShop());
+            .Subscribe(_ => PreviousPage());
         InputHandler.onCancel
             .Where(_ => visible)
             .Subscribe(_ => MainDisplay.ShowCores());
-        foreach(var shop in m_shops){
-            shop.OnShopDisplayInitialized();
-        }
+        m_shop.OnShopDisplayInitialized();
     }
 
-    void ShowShop (Shop shop) {
-        currentShop = shop;
-        var shopName = (shop != null ? shop.displayName : "null");
-        m_headerText.text = $"Shop - {shopName}";
-        m_pageText.text = $"{GetIndexOfShop(shop) + 1}/{shopCount}";
-        // clear all the things
-        if(shop != null){
-            // generate the things
-            // they display their name
-            // items do need a property "sellable" so i can print that next to the ones you can sell again
-            // description of what a thing does? no. 
-        }
+    void ShowPage (int index) {
+
     }
 
-    void NextShop () {
-        var currentIndex = GetIndexOfShop(currentShop);
-        var newIndex = (currentIndex + 1) % m_shops.Length;
-        ShowShop(m_shops[newIndex]);
+    void NextPage () {
+        // var currentIndex = GetIndexOfShop(currentShop);
+        // var newIndex = (currentIndex + 1) % m_shops.Length;
+        // ShowShop(m_shops[newIndex]);
     }
 
-    void PreviousShop () {
-        var currentIndex = GetIndexOfShop(currentShop);
-        if(currentIndex == 0){
-            ShowShop(m_shops[m_shops.Length - 1]);
-        }else{
-            ShowShop(m_shops[currentIndex - 1]);
-        }
+    void PreviousPage () {
+        // var currentIndex = GetIndexOfShop(currentShop);
+        // if(currentIndex == 0){
+        //     ShowShop(m_shops[m_shops.Length - 1]);
+        // }else{
+        //     ShowShop(m_shops[currentIndex - 1]);
+        // }
     }
 
-    public static IEnumerable<string> GetCommandItemNames () {
-        foreach(var shop in instance.m_shops){
-            foreach(var itemName in shop.itemNamesForCommands){
-                yield return itemName;
-            }
-        }
-    }
+    public static IEnumerable<string> GetCommandItemNames () => instance.m_shop.itemNamesForCommands;
 
-    private int GetPriceOfComponent (Cores.Components.CoreComponent component) {
-        foreach(var shop in m_shops){
-            if(shop.TryGetItemForComponent(component, out var item)){
-                var output = item.price;
-                // for(int i=0; i<component.upgrades; i++){
-                //     // ???
-                // }
-                return output;
-            }
+    private static int GetPriceOfComponent (Cores.Components.CoreComponent component) {
+        if(instance.m_shop.TryGetItemForComponent(component, out var item)){
+            var output = item.price;
+            // for(int i=0; i<component.upgrades; i++){
+            //     // ???
+            // }
+            return output;
         }
         return 0;
     }
 
     public static bool OnBuyCommand (string itemName, Cores.Core targetCore, out string message) {
-        foreach(var shop in instance.m_shops){
-            if(shop.TryGetItemForCommand(itemName, targetCore, out var item)){
-                return item.TryPurchase(targetCore, out message);
-            }
+        if(instance.m_shop.TryGetItemForCommand(itemName, targetCore, out var item)){
+            return item.TryPurchase(targetCore, out message);
         }
         message = $"\"{itemName}\" isn't a valid item name!";
         return false;
@@ -135,7 +96,7 @@ public class ShopDisplay : MonoBehaviour {
         }
         if(targetComponent != default){
             targetComponent.core.RemoveComponent(targetComponent);
-            GameState.current.currency += instance.GetPriceOfComponent(targetComponent);
+            GameState.current.currency += GetPriceOfComponent(targetComponent);
             message = string.Empty;
             return true;
         }

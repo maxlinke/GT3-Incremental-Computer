@@ -680,8 +680,7 @@ MonoBehaviour:
   m_canvas: {fileID: 314849200}
   m_headerText: {fileID: 1205278910}
   m_pageText: {fileID: 1737910285}
-  m_shops:
-  - {fileID: 11400000, guid: bbcc6348988351f42958d35c0013b3b8, type: 2}
+  m_shop: {fileID: 11400000, guid: bbcc6348988351f42958d35c0013b3b8, type: 2}
 --- !u!1 &321350531
 GameObject:
   m_ObjectHideFlags: 0
