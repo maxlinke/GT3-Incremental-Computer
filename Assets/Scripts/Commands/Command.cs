@@ -17,7 +17,7 @@ namespace Commands {
             new HelpCommand(){id = helpCommandId},
             new ShopCommand(){id = shopCommandId},
             new BuyCommand(){id = "buy"},
-            // sell
+            new SellCommand(){id = "sell"},
             // move
             new SaveCommand(){id = "save"},
             new LoadCommand(){id = "load"},

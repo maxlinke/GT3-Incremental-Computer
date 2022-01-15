@@ -42,7 +42,6 @@ namespace Shops {
 
             public abstract int price { get; }
 
-
         }
 
         protected static readonly IReadOnlyCollection<Item> emptyItemList = new List<Item>();
@@ -66,6 +65,8 @@ namespace Shops {
         public abstract IEnumerable<string> itemNamesForCommands { get; }
 
         public abstract bool TryGetItemForCommand (string itemName, Cores.Core core, out Item item);
+
+        public abstract bool TryGetItemForComponent (Cores.Components.CoreComponent component, out Item item);
 
     }
 

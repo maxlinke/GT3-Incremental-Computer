@@ -12,8 +12,8 @@ public class MainDisplay : MonoBehaviour {
 
     public void Initialize () {
         instance = this;
-        m_coreDisplay.Initialize();
         m_shopDisplay.Initialize();
+        m_coreDisplay.Initialize();
         GameState.onGameStateChanged += (_) => ShowCores();
         ShowCores();
     }

@@ -9,7 +9,7 @@ namespace Cores.Components {
 
         public Processor processor { get; private set; }
 
-        protected override Processor component => processor;
+        public override CoreComponent component => processor;
 
         bool m_updateImage;
         bool m_newImageState;

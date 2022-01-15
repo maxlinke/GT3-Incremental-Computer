@@ -15,8 +15,8 @@ public class GameInterface : MonoBehaviour {
 
     public void Initialize () {
         m_console.Initialize();
-        m_queue.Initialize();
         m_mainDisplay.Initialize();
+        m_queue.Initialize();
 
         m_statusDisplay.Initialize();
         m_currencyDisplay.Initialize();

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cores;
+using Cores.Components;
 using UnityEngine;
+using System.Linq;
 
 namespace Shops {
 
@@ -14,12 +16,17 @@ namespace Shops {
         public const string CAT_COOLERS = "Coolers";
 
         const string CMD_CAT_CORE = "core";
+        const string CMD_CAT_PROC = "proc";
 
         [Header("Cores")]
         [SerializeField] int m_firstUnlockableCoreCost = 100;
         [SerializeField] int m_eachNewUnlockableCoreCostFactor = 10;
 
+        [SerializeField] ProcessorPurchase[] m_processorPurchases;
+
         public override string displayName => "Components";
+
+        public IEnumerable<ProcessorPurchase> processorPurchases => m_processorPurchases;
 
         public override IEnumerable<string> categories { get {
             yield return CAT_CORE_UNLOCKS;
@@ -33,6 +40,7 @@ namespace Shops {
                 case CAT_CORE_UNLOCKS:
                     return CoreUnlock.allUnlocks;
                 case CAT_PROCESSORS:
+                    return processorPurchases;
                 case CAT_SCHEDULERS:
                 case CAT_COOLERS:
                     // TODO these probably feed from serialized lists, so i can easier tweak stuff
@@ -45,21 +53,45 @@ namespace Shops {
 
         public override IEnumerable<string> itemNamesForCommands { get {
             yield return CMD_CAT_CORE;
-        } }
-
-        public override bool TryGetItemForCommand (string itemName, Core core, out Item item) {
-            switch(itemName.ToLower()){
-                case CMD_CAT_CORE:
-                    item = CoreUnlock.allUnlocks[core.index];
-                    return true;
-                default:
-                    item = default;
-                    return false;
+            foreach(var procPurchase in processorPurchases){
+                yield return procPurchase.name;
             }
-        }
+        } }
 
         public override void OnShopDisplayInitialized () {
             CoreUnlock.EnsureListInitialized(this);
+            for(int i=0; i<m_processorPurchases.Length; i++){
+                var procPurchase = m_processorPurchases[i];
+                procPurchase.SetName($"{CMD_CAT_PROC}{i}");
+            }
+            Processor.Level.EnsureLevelsInitialized(this);
+        }
+
+        public override bool TryGetItemForCommand (string itemName, Core core, out Item item) {
+            itemName = itemName.ToLower();
+            if(itemName == CMD_CAT_CORE){
+                item = CoreUnlock.allUnlocks[core.index];
+                return true;
+            }
+            if(itemName.StartsWith(CMD_CAT_PROC)){
+                item = processorPurchases.Where(pp => pp.name == itemName).FirstOrDefault();
+                return item != null;
+            }
+            item = default;
+            return false;
+        }
+
+        public override bool TryGetItemForComponent (Cores.Components.CoreComponent component, out Item item) {
+            if(component is Processor){
+                item = m_processorPurchases[component.levelIndex];
+                return true;
+            }else if(component is Scheduler){
+
+            // }else if(component is Cooler){
+
+            }
+            item = default;
+            return false;
         }
 
         public class CoreUnlock : Item {
@@ -112,6 +144,51 @@ namespace Shops {
                         this.m_price *= shop.m_eachNewUnlockableCoreCostFactor;
                     }
                 }
+            }
+
+        }
+
+        public abstract class ComponentPurchase : Item {
+
+            protected abstract int slotSize { get; }
+
+            public override bool IsPurchaseableAtAll (out string message) { 
+                message = default;
+                return true;
+            }
+
+            protected override bool PurchaseableForCore (Core targetCore, out string errorMessage) {
+                if(!targetCore.unlocked){
+                    errorMessage = $"Core {targetCore.index} isn't unlocked yet!";
+                    return false;
+                }
+                if(targetCore.remainingSlots < slotSize){
+                    errorMessage = $"Core {targetCore.index} doesn't have enough free slots, sell or move components to make room!";
+                    return false;
+                }
+                errorMessage = default;
+                return true;
+            }
+
+        }
+
+        [System.Serializable] 
+        public class ProcessorPurchase : ComponentPurchase {
+
+            [SerializeField] int m_price;
+            [SerializeField] Processor.Level m_actualLevel;
+
+            public override string name => m_name;
+            public override int price => m_price;
+            public Processor.Level levelData => m_actualLevel;
+
+            protected override int slotSize => levelData.slotSize;
+
+            [System.NonSerialized] string m_name;
+            public void SetName (string newName) => m_name = newName;
+
+            protected override void OnPurchased (Core targetCore) {
+                targetCore.AddProcessor(Processor.Level.LevelIndex(levelData));
             }
 
         }

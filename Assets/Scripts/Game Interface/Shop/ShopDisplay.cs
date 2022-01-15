@@ -71,6 +71,9 @@ public class ShopDisplay : MonoBehaviour {
         // clear all the things
         if(shop != null){
             // generate the things
+            // they display their name
+            // items do need a property "sellable" so i can print that next to the ones you can sell again
+            // description of what a thing does? no. 
         }
     }
 
@@ -97,6 +100,19 @@ public class ShopDisplay : MonoBehaviour {
         }
     }
 
+    private int GetPriceOfComponent (Cores.Components.CoreComponent component) {
+        foreach(var shop in m_shops){
+            if(shop.TryGetItemForComponent(component, out var item)){
+                var output = item.price;
+                // for(int i=0; i<component.upgrades; i++){
+                //     // ???
+                // }
+                return output;
+            }
+        }
+        return 0;
+    }
+
     public static bool OnBuyCommand (string itemName, Cores.Core targetCore, out string message) {
         foreach(var shop in instance.m_shops){
             if(shop.TryGetItemForCommand(itemName, targetCore, out var item)){
@@ -104,6 +120,26 @@ public class ShopDisplay : MonoBehaviour {
             }
         }
         message = $"\"{itemName}\" isn't a valid item name!";
+        return false;
+    }
+
+    public static bool OnSellCommand (string id, out string message) {
+        var targetComponent = default(Cores.Components.CoreComponent);
+        foreach(var core in GameState.current.cores){
+            foreach(var component in core.components){
+                if(component.id.Equals(id)){
+                    targetComponent = component;
+                    break;
+                }
+            }
+        }
+        if(targetComponent != default){
+            targetComponent.core.RemoveComponent(targetComponent);
+            GameState.current.currency += instance.GetPriceOfComponent(targetComponent);
+            message = string.Empty;
+            return true;
+        }
+        message = $"There is no component with the id \"{id}\"!";
         return false;
     }
 

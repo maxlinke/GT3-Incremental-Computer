@@ -6,8 +6,8 @@ namespace Cores.Components {
 
         [SerializeField] public ID id;
         [SerializeField] public int slotIndex;
-        [SerializeField] public int level;
-        [SerializeField] public int upgrades;
+        [SerializeField] public int levelIndex;
+        [SerializeField] public int upgradeCount;
 
         [field: System.NonSerialized] public Core core { get; private set; }
         
@@ -29,8 +29,8 @@ namespace Cores.Components {
             this.core = core;
             this.id = id;
             this.slotIndex = slotIndex;
-            level = 0;
-            upgrades = 0;
+            levelIndex = 0;
+            upgradeCount = 0;
             m_initialized = true;
         }
 

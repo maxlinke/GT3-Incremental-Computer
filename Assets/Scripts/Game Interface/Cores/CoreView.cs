@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cores.Components;
 using Scheduler = Cores.Components.Scheduler;
+using System.Linq;
 
 namespace Cores {
 
@@ -139,6 +140,11 @@ namespace Cores {
             m_redoInternalLayout = true;
         }
 
+        void RemoveView (CoreComponentView viewToRemove) {
+            m_compViews.Remove(viewToRemove);
+            Destroy(viewToRemove.gameObject);
+        }
+
         void UpdateElementColors () {
             var color = GetUnlockStateColor(core.unlocked);
             m_frame.color = color;
@@ -182,10 +188,18 @@ namespace Cores {
             for(int i=0; i<m_slots.Length; i++){
                 m_slots[i].SetGOActive(true);
             }
-            foreach(var comp in m_compViews){
-                var slotIndex = comp.slotIndex;
-                comp.rectTransform.SetAnchoredY(m_slots[slotIndex].rectTransform.anchoredPosition.y);
-                for(int i=0; i<comp.slotSize; i++){
+            var removeViews = new List<CoreComponentView>(m_compViews.Where(view => !core.components.Contains(view.component)));
+            var newComps = new List<CoreComponent>(core.components.Where(component => m_compViews.Find(view => view.component == component) == null));
+            foreach(var compView in removeViews){
+                RemoveView(compView);
+            }
+            foreach(var newComp in newComps){
+                AddComponent(newComp);
+            }
+            foreach(var compView in m_compViews){
+                var slotIndex = compView.slotIndex;
+                compView.rectTransform.SetAnchoredY(m_slots[slotIndex].rectTransform.anchoredPosition.y);
+                for(int i=0; i<compView.slotSize; i++){
                     m_slots[slotIndex].SetGOActive(false);
                     slotIndex++;
                 }

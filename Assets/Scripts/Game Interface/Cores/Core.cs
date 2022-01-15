@@ -161,6 +161,43 @@ namespace Cores {
             }
         }
 
+        public void AddProcessor (int level) {
+            var newProcessor = new Processor(this, ID.GetNext(), nextFreeSlotIndex);
+            newProcessor.levelIndex = level;
+            m_processors.Add(newProcessor);
+            onLayoutChanged();
+        }
+
+        public void AddScheduler (int level) {
+            var newScheduler = new Scheduler(this, ID.GetNext(), nextFreeSlotIndex);
+            newScheduler.levelIndex = level;
+            m_schedulers.Add(newScheduler);
+            onLayoutChanged();
+        }
+
+        // TODO cooler
+
+        public void RemoveComponent (CoreComponent removeComponent) {
+            bool removed;
+            if(removeComponent is Processor processor){
+                removed = m_processors.Remove(processor);
+            }else if(removeComponent is Scheduler scheduler){
+                removed = m_schedulers.Remove(scheduler);
+            // }else if(removeComponent is Cooler cooler){
+            // // TODO
+            }else{
+                removed = false;
+            }
+            if(removed){
+                foreach(var component in components){
+                    if(component.slotIndex > removeComponent.slotIndex){
+                        component.slotIndex -= removeComponent.slotSize;
+                    }
+                }
+                onLayoutChanged();
+            }
+        }
+
     }
 
 }

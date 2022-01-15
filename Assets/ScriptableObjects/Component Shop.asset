@@ -12,3 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49751f1cc46860641a934143ec0438b9, type: 3}
   m_Name: Component Shop
   m_EditorClassIdentifier: 
+  m_firstUnlockableCoreCost: 100
+  m_eachNewUnlockableCoreCostFactor: 10
+  m_processorPurchases:
+  - m_price: 40
+    m_actualLevel:
+      <slotSize>k__BackingField: 1
+      <maxTasksPerCycle>k__BackingField: 4
+  - m_price: 200
+    m_actualLevel:
+      <slotSize>k__BackingField: 2
+      <maxTasksPerCycle>k__BackingField: 20
+  - m_price: 1200
+    m_actualLevel:
+      <slotSize>k__BackingField: 3
+      <maxTasksPerCycle>k__BackingField: 200

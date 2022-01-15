@@ -9,7 +9,7 @@ namespace Cores.Components {
 
         public Scheduler scheduler { get; private set; }
 
-        protected override Scheduler component => scheduler;
+        public override CoreComponent component => scheduler;
 
         bool m_executing;
         bool m_updateImage;

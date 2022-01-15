@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
     [SerializeField, RedIfEmpty] PopupDialogue m_popupDialogue;
 
     [SerializeField] int m_debugCurrencyGainPerFrame;
+    [SerializeField] int m_debugInitCurrency;
 
     void Start () {
         Application.targetFrameRate = 60;
@@ -24,6 +25,9 @@ public class GameManager : MonoBehaviour {
                 $"and \"{Command.helpCommandId}\" to get help with particular commands. " + 
                 $"Have fun!\n"
             );
+        }
+        if(m_debugInitCurrency != 0){
+            GameState.current.currency += m_debugInitCurrency;
         }
         // TODO bring the auto save thing back
         // full screen popup
