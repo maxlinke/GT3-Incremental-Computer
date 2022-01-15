@@ -13,16 +13,29 @@ public class ShopDisplay : MonoBehaviour {
     [SerializeField, RedIfEmpty] Text m_headerText;
     [SerializeField, RedIfEmpty] Text m_pageText;
 
+    [Header("Page Components")]
+    [SerializeField, RedIfEmpty] RectTransform m_pagesParent;
+    [SerializeField, RedIfEmpty] Text m_sectionHeaderTemplate;
+    [SerializeField, RedIfEmpty] ItemDisplay m_itemDisplayTemplate;
+
     [Header("Shops")]
     [SerializeField, RedIfEmpty] Shop m_shop;
+
+    [Header("Settings")]
+    [SerializeField] float m_spaceBetweenSectionHeaderAndFirstItem;
+    [SerializeField] float m_spaceBetweenItemDisplays;
+    [SerializeField] float m_spaceBetweenSections;
+
+    List<GameObject> m_pages;
+    int m_shownPageIndex;
 
     public bool visible {
         get => m_canvas.enabled;
         set {
             var changed = (value != visible);
             m_canvas.enabled = value;
-            if(changed && visible){
-                ShowPage(0);
+            if(changed){
+                ShowPage(visible ? 0 : -1);
             }
         }
     }
@@ -30,6 +43,7 @@ public class ShopDisplay : MonoBehaviour {
     public void Initialize () {
         instance = this;
         gameObject.SetActive(true);
+        m_canvas.enabled = true;
         InputHandler.onScrollCommand
             .Where(_ => visible)
             .Where(dir => dir.x > 0)
@@ -41,26 +55,88 @@ public class ShopDisplay : MonoBehaviour {
         InputHandler.onCancel
             .Where(_ => visible)
             .Subscribe(_ => MainDisplay.ShowCores());
-        m_shop.OnShopDisplayInitialized();
+        m_headerText.text = "Shop";
+        m_shop.EnsureInitialized();
+        GeneratePages();
+        ShowPage(0);
     }
 
     void ShowPage (int index) {
-
+        for(int i=0; i<m_pages.Count; i++){
+            m_pages[i].gameObject.SetActive(i == index);
+        }
+        m_shownPageIndex = index;
+        m_pageText.text = $"{index + 1}/{m_pages.Count}";
     }
 
     void NextPage () {
-        // var currentIndex = GetIndexOfShop(currentShop);
-        // var newIndex = (currentIndex + 1) % m_shops.Length;
-        // ShowShop(m_shops[newIndex]);
+        var newIndex = (m_shownPageIndex + 1) % m_pages.Count;
+        ShowPage(newIndex);
     }
 
     void PreviousPage () {
-        // var currentIndex = GetIndexOfShop(currentShop);
-        // if(currentIndex == 0){
-        //     ShowShop(m_shops[m_shops.Length - 1]);
-        // }else{
-        //     ShowShop(m_shops[currentIndex - 1]);
-        // }
+        if(m_shownPageIndex == 0){
+            ShowPage(m_pages.Count - 1);
+        }else{
+            ShowPage(m_shownPageIndex - 1);
+        }
+    }
+
+    void GeneratePages () {
+        m_pages = new List<GameObject>();
+        m_sectionHeaderTemplate.SetGOActive(false);
+        m_itemDisplayTemplate.SetGOActive(false);
+        var currentPage = GetNewPage();
+        var sectionY = 0f;
+        var elementY = 0f;
+        foreach(var category in m_shop.categories){
+            var section = GetNewSection(category);
+            foreach(var item in m_shop.GetItemsInCategory(category)){
+                var newDisplay = Instantiate(m_itemDisplayTemplate, section);
+                newDisplay.Initialize(item);
+                newDisplay.rectTranform.anchoredPosition = new Vector2(0, elementY);
+                elementY -= newDisplay.rectTranform.rect.height;
+                elementY -= m_spaceBetweenItemDisplays;
+            }
+            section.SetHeight(Mathf.Abs(elementY));
+            if(Mathf.Abs(sectionY) > currentPage.rect.height){
+                currentPage = GetNewPage();
+                section.SetParent(currentPage, false);
+                section.anchoredPosition = Vector2.zero;
+                sectionY = 0;
+            }
+            sectionY -= section.rect.height;
+            sectionY -= m_spaceBetweenSections;
+        }
+
+        RectTransform GetNewPage () {
+            var newPage = new GameObject($"Page {m_pages.Count + 1}", typeof(RectTransform)).transform as RectTransform;
+            newPage.SetParent(m_pagesParent, false);
+            newPage.anchorMin = Vector2.zero;
+            newPage.anchorMax = Vector2.one;
+            newPage.pivot = new Vector2(0.5f, 0.5f);
+            newPage.sizeDelta = Vector2.zero;
+            newPage.anchoredPosition = Vector2.zero;
+            m_pages.Add(newPage.gameObject);
+            return newPage;
+        }
+
+        RectTransform GetNewSection (string category) {
+            var newSection = new GameObject($"Section {category}", typeof(RectTransform)).transform as RectTransform;
+            newSection.SetParent(currentPage, false);
+            newSection.anchorMin = new Vector2(0, 1);
+            newSection.anchorMax = new Vector2(1, 1);
+            newSection.pivot = new Vector2(0.5f, 1);
+            newSection.sizeDelta = Vector2.zero;
+            newSection.anchoredPosition = new Vector2(0, sectionY);
+            var sectionHeader = Instantiate(m_sectionHeaderTemplate, newSection);
+            sectionHeader.gameObject.SetActive(true);
+            sectionHeader.text = $"<{category.ToUpper()}>";
+            elementY = 0;
+            elementY -= sectionHeader.preferredHeight;
+            elementY -= m_spaceBetweenSectionHeaderAndFirstItem;
+            return newSection;
+        }
     }
 
     public static IEnumerable<string> GetCommandItemNames () => instance.m_shop.itemNamesForCommands;
@@ -68,9 +144,6 @@ public class ShopDisplay : MonoBehaviour {
     private static int GetPriceOfComponent (Cores.Components.CoreComponent component) {
         if(instance.m_shop.TryGetItemForComponent(component, out var item)){
             var output = item.price;
-            // for(int i=0; i<component.upgrades; i++){
-            //     // ???
-            // }
             return output;
         }
         return 0;
@@ -85,16 +158,7 @@ public class ShopDisplay : MonoBehaviour {
     }
 
     public static bool OnSellCommand (string id, out string message) {
-        var targetComponent = default(Cores.Components.CoreComponent);
-        foreach(var core in GameState.current.cores){
-            foreach(var component in core.components){
-                if(component.id.Equals(id)){
-                    targetComponent = component;
-                    break;
-                }
-            }
-        }
-        if(targetComponent != default){
+        if(GameState.current.TryFindComponentForId(id, out var targetComponent)){
             targetComponent.core.RemoveComponent(targetComponent);
             GameState.current.currency += GetPriceOfComponent(targetComponent);
             message = string.Empty;

@@ -7,9 +7,6 @@ public class MainDisplay : MonoBehaviour {
     [SerializeField, RedIfEmpty] CoreDisplay m_coreDisplay;
     [SerializeField, RedIfEmpty] ShopDisplay m_shopDisplay;
 
-    public static bool showingCores => instance.m_coreDisplay.visible;
-    public static bool showingShop => instance.m_shopDisplay.visible;
-
     public void Initialize () {
         instance = this;
         m_shopDisplay.Initialize();
@@ -20,11 +17,9 @@ public class MainDisplay : MonoBehaviour {
 
     public static void ShowCores () {
         instance.m_shopDisplay.visible = false;
-        instance.m_coreDisplay.visible = true;
     }
 
     public static void ShowShop () {
-        instance.m_coreDisplay.visible = false;
         instance.m_shopDisplay.visible = true;
     }
 

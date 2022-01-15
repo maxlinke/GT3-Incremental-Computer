@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cores;
+using Cores.Components;
 using Tasks;
 
 [System.Serializable]
@@ -60,5 +61,18 @@ public class GameState {
     public IList<Task> tasks => m_tasks;
     public IReadOnlyList<Core> cores => m_cores;
     public IList<ID> idQueue => m_idQueue;
+
+    public bool TryFindComponentForId (string id, out CoreComponent output) {
+        foreach(var core in GameState.current.cores){
+            foreach(var component in core.components){
+                if(component.id.Equals(id)){
+                    output = component;
+                    return true;
+                }
+            }
+        }
+        output = default;
+        return false;
+    }
 
 }

@@ -36,6 +36,8 @@ namespace Shops {
 
         public abstract int price { get; }
 
+        public abstract string info { get; }
+
     }
 
 }

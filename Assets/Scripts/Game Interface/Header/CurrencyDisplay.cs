@@ -14,14 +14,13 @@ namespace GameInterfaceElements.Header {
         float m_nextGainUpdate;
         int m_pointsAtLastGainUpdate;
 
-        System.Text.StringBuilder m_niceNumberStringBuilder;
+        private static System.Text.StringBuilder m_niceNumberStringBuilder;
 
         public void Initialize () {
             GameState.onGameStateChanged += OnGameStateChanged;
             GameState.onCurrencyChanged += OnCurrencyChanged;
             OnGameStateChanged(GameState.current);
             OnCurrencyChanged(GameState.current.currency);
-            m_niceNumberStringBuilder = new System.Text.StringBuilder();
         }
 
         void OnGameStateChanged (GameState gameState) {
@@ -48,7 +47,8 @@ namespace GameInterfaceElements.Header {
             }
         }
 
-        string NumberWithPeriods (int inputNumber) {
+        public static string NumberWithPeriods (int inputNumber) {
+            m_niceNumberStringBuilder = m_niceNumberStringBuilder ?? new System.Text.StringBuilder();
             m_niceNumberStringBuilder.Clear();
             var rawString = inputNumber.ToString();
             for(int i=0; i<rawString.Length; i++){

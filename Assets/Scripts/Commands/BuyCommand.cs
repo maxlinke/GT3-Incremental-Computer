@@ -29,6 +29,8 @@ namespace Commands {
                     core = GameState.current.cores[coreIndex];
                 }catch(System.IndexOutOfRangeException){
                     core = default;
+                }catch(System.ArgumentOutOfRangeException){
+                    core = default;
                 }
             }
             if(!goodParse || core == default){

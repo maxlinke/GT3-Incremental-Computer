@@ -12,6 +12,7 @@ namespace Shops.Items {
 
         public override string name => m_name;
         public override int price => m_price;
+        public override string info => $"{levelData.slotSize} Slots\n{levelData.maxTasksPerCycle} Tasks/Cycle";
         public Processor.Level levelData => m_actualLevel;
 
         protected override int slotSize => levelData.slotSize;

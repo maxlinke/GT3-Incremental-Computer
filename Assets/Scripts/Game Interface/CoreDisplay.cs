@@ -14,16 +14,12 @@ public class CoreDisplay : MonoBehaviour {
 
     public static CoreDisplay instance { get; private set; }
 
-    public bool visible { 
-        get => m_canvas.enabled;
-        set => m_canvas.enabled = value;
-    }
-
     CoreView[] m_cores;
 
     public void Initialize () {
         instance = this;
         gameObject.SetActive(true);
+        m_canvas.enabled = true;
         SpawnCores();
         m_infoDisplay.Initialize(this);
     }

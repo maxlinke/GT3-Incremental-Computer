@@ -60,7 +60,7 @@ namespace Shops {
             }
         } }
 
-        public void OnShopDisplayInitialized () {
+        public void EnsureInitialized () {
             CoreUnlock.EnsureListInitialized(this);
             for(int i=0; i<m_processorPurchases.Length; i++){
                 var procPurchase = m_processorPurchases[i];

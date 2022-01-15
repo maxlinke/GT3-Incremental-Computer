@@ -20,6 +20,7 @@ namespace Shops.Items {
 
         public override string name => m_name;
         public override int price => m_price;
+        public override string info => string.Empty;
 
         public override bool IsPurchaseableAtAll (out string message) {
             return PurchaseableForCore(GameState.current.cores[m_coreIndex], out message);

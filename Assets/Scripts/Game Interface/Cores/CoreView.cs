@@ -18,7 +18,7 @@ namespace Cores {
         public static Color GetUnlockStateColor (bool unlocked) => unlocked ? onColor : offColor;
 
         public static readonly Color onColor = new Color(1f, 1f, 1f, 1f);
-        public static readonly Color offColor = new Color(1f, 1f, 1f, 0.4f);
+        public static readonly Color offColor = new Color(1f, 1f, 1f, GameInterface.INACTIVE_COLOR_FACTOR);
 
         [Header("Basic Components")]
         [SerializeField, RedIfEmpty] Image m_frame;

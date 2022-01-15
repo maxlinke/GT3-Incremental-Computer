@@ -3,6 +3,8 @@ using GameInterfaceElements.Header;
 
 public class GameInterface : MonoBehaviour {
 
+    public const float INACTIVE_COLOR_FACTOR = 0.4f;
+
     [Header("Major Elements")]
     [SerializeField, RedIfEmpty] InputConsole m_console;
     [SerializeField, RedIfEmpty] TaskQueue m_queue;
