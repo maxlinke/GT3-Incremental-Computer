@@ -51,6 +51,8 @@ namespace Shops {
 
         public abstract IEnumerable<string> categories { get; }
 
+        public abstract void OnShopDisplayInitialized ();
+
         public abstract IEnumerable<Item> GetItemsInCategory (string category);
 
         public IEnumerable<Item> items { get {
@@ -60,6 +62,10 @@ namespace Shops {
                 }
             }
         } }
+
+        public abstract IEnumerable<string> itemNamesForCommands { get; }
+
+        public abstract bool TryGetItemForCommand (string itemName, Cores.Core core, out Item item);
 
     }
 

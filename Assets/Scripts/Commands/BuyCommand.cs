@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Commands {
 
@@ -18,11 +16,28 @@ namespace Commands {
                 message = "No paramters given. Please specify an item and the index of the target core.";
                 return false;
             }
+            if(parameters.Length < 2){
+                message = "No core index given, please also specify the you want to purchase the item for.";
+                return false;
+            }
             var itemName = parameters[0];
-            // TODO get the thing from the shop
-            message = "TODO implement the rest";
-            return false;
+            var coreIndexString = parameters[1];
+            var goodParse = int.TryParse(coreIndexString, out var coreIndex);
+            var core = default(Cores.Core);
+            if(goodParse){
+                try{
+                    core = GameState.current.cores[coreIndex];
+                }catch(System.IndexOutOfRangeException){
+                    core = default;
+                }
+            }
+            if(!goodParse || core == default){
+                message = $"\"{coreIndexString}\" is not a valid core index.";
+                return false;
+            }
+            return ShopDisplay.OnBuyCommand(itemName, core, out message);
         }
+
     }
 
 }

@@ -58,6 +58,9 @@ public class ShopDisplay : MonoBehaviour {
         InputHandler.onCancel
             .Where(_ => visible)
             .Subscribe(_ => MainDisplay.ShowCores());
+        foreach(var shop in m_shops){
+            shop.OnShopDisplayInitialized();
+        }
     }
 
     void ShowShop (Shop shop) {
@@ -84,6 +87,24 @@ public class ShopDisplay : MonoBehaviour {
         }else{
             ShowShop(m_shops[currentIndex - 1]);
         }
+    }
+
+    public static IEnumerable<string> GetCommandItemNames () {
+        foreach(var shop in instance.m_shops){
+            foreach(var itemName in shop.itemNamesForCommands){
+                yield return itemName;
+            }
+        }
+    }
+
+    public static bool OnBuyCommand (string itemName, Cores.Core targetCore, out string message) {
+        foreach(var shop in instance.m_shops){
+            if(shop.TryGetItemForCommand(itemName, targetCore, out var item)){
+                return item.TryPurchase(targetCore, out message);
+            }
+        }
+        message = $"\"{itemName}\" isn't a valid item name!";
+        return false;
     }
 
 }

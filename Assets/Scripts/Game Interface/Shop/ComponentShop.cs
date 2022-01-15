@@ -8,10 +8,12 @@ namespace Shops {
     [CreateAssetMenu]
     public class ComponentShop : Shop {
 
-        const string CAT_CORE_UNLOCKS = "Core Unlocks";
-        const string CAT_PROCESSORS = "Processors";
-        const string CAT_SCHEDULERS = "Schedulers";
-        const string CAT_COOLERS = "Coolers";
+        public const string CAT_CORE_UNLOCKS = "Core Unlocks";
+        public const string CAT_PROCESSORS = "Processors";
+        public const string CAT_SCHEDULERS = "Schedulers";
+        public const string CAT_COOLERS = "Coolers";
+
+        const string CMD_CAT_CORE = "core";
 
         [Header("Cores")]
         [SerializeField] int m_firstUnlockableCoreCost = 100;
@@ -29,7 +31,6 @@ namespace Shops {
         public override IEnumerable<Item> GetItemsInCategory (string category) {
             switch(category){
                 case CAT_CORE_UNLOCKS:
-                    CoreUnlock.EnsureListInitialized(this);
                     return CoreUnlock.allUnlocks;
                 case CAT_PROCESSORS:
                 case CAT_SCHEDULERS:
@@ -40,6 +41,25 @@ namespace Shops {
                     Debug.LogError($"Unknown category \"{category}\"!");
                     return emptyItemList;
             }
+        }
+
+        public override IEnumerable<string> itemNamesForCommands { get {
+            yield return CMD_CAT_CORE;
+        } }
+
+        public override bool TryGetItemForCommand (string itemName, Core core, out Item item) {
+            switch(itemName.ToLower()){
+                case CMD_CAT_CORE:
+                    item = CoreUnlock.allUnlocks[core.index];
+                    return true;
+                default:
+                    item = default;
+                    return false;
+            }
+        }
+
+        public override void OnShopDisplayInitialized () {
+            CoreUnlock.EnsureListInitialized(this);
         }
 
         public class CoreUnlock : Item {
@@ -83,7 +103,7 @@ namespace Shops {
 
             private CoreUnlock (ComponentShop shop, int index) {
                 this.m_coreIndex = index;
-                this.m_name = $"Core {index}";
+                this.m_name = $"{CMD_CAT_CORE} {index}";
                 if(index == 0){
                     this.m_price = 0;
                 }else{                    

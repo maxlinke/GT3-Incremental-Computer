@@ -45,6 +45,15 @@ namespace Cores {
         [SerializeField] private List<Scheduler> m_schedulers;
         // TODO coolers
 
+        public int index { get {
+            for(int i=0; i<GameState.current.cores.Count; i++){
+                if(GameState.current.cores[i] == this){
+                    return i;
+                }
+            }
+            return -1;
+        } }
+
         public IReadOnlyList<Processor> processors => m_processors;
         public IReadOnlyList<Scheduler> schedulers => m_schedulers;
         
