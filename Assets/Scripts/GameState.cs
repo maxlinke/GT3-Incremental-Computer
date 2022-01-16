@@ -45,6 +45,7 @@ public class GameState {
     [SerializeField] private bool m_hasRun;
     [SerializeField] private List<ID> m_idQueue;
     [SerializeField] private List<Task> m_tasks;
+    [SerializeField] private int m_taskLevel;
     [SerializeField] private Core[] m_cores;
 
     public int currency {
@@ -59,6 +60,10 @@ public class GameState {
 
     public bool hasRun => m_hasRun;
     public IList<Task> tasks => m_tasks;
+    public int taskLevel { 
+        get => m_taskLevel;
+        set => m_taskLevel = Mathf.Clamp(value, 0, Task.MAX_LEVEL);
+    }
     public IReadOnlyList<Core> cores => m_cores;
     public IList<ID> idQueue => m_idQueue;
 

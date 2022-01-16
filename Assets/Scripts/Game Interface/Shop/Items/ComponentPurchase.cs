@@ -1,6 +1,16 @@
+using UnityEngine;
+
 namespace Shops.Items {
 
     public abstract class ComponentPurchase : Item {
+        
+        [SerializeField] int m_price;
+        
+        [System.NonSerialized] string m_name;
+        public void SetName (string newName) => m_name = newName;
+
+        public override int price => m_price;
+        public override string name => m_name;
 
         protected abstract int slotSize { get; }
 

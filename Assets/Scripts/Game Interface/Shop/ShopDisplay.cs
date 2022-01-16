@@ -99,7 +99,7 @@ public class ShopDisplay : MonoBehaviour {
                 elementY -= m_spaceBetweenItemDisplays;
             }
             section.SetHeight(Mathf.Abs(elementY));
-            if(Mathf.Abs(sectionY) > currentPage.rect.height){
+            if((section.rect.height - sectionY) > currentPage.rect.height){
                 currentPage = GetNewPage();
                 section.SetParent(currentPage, false);
                 section.anchoredPosition = Vector2.zero;

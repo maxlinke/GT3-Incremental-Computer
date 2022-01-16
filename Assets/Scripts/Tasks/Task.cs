@@ -4,6 +4,8 @@ namespace Tasks {
 
     public class Task {
 
+        public const int MAX_LEVEL = 2;
+
         // TODO have a central upgrades class that handles that
 
         // private class LevelData {
@@ -32,7 +34,7 @@ namespace Tasks {
             GameState.current.currency += value;
         }
 
-        public int value { get { return 1; } } // TODO
+        public int value { get { return count; } } // TODO
 
         public string name { get {
             switch(level){

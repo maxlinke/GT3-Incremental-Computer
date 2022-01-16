@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 49751f1cc46860641a934143ec0438b9, type: 3}
-  m_Name: Component Shop
+  m_Name: Shop
   m_EditorClassIdentifier: 
   m_firstUnlockableCoreCost: 100
   m_eachNewUnlockableCoreCostFactor: 10
@@ -27,3 +27,16 @@ MonoBehaviour:
     m_actualLevel:
       <slotSize>k__BackingField: 3
       <maxTasksPerCycle>k__BackingField: 200
+  m_schedulerPurchases:
+  - m_price: 10
+    m_levelData:
+      <slotSize>k__BackingField: 1
+      <taskStackSize>k__BackingField: 1
+  - m_price: 50
+    m_levelData:
+      <slotSize>k__BackingField: 1
+      <taskStackSize>k__BackingField: 4
+  - m_price: 200
+    m_levelData:
+      <slotSize>k__BackingField: 1
+      <taskStackSize>k__BackingField: 20

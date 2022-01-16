@@ -17,6 +17,8 @@ namespace Shops {
 
         public const string CMD_CAT_CORE = "core";
         public const string CMD_CAT_PROC = "proc";
+        public const string CMD_CAT_SCHED = "sched";
+        public const string CMD_CAT_COOLER = "cooler";
 
         private static readonly IEnumerable<Item> emptyItemList = new List<Item>();
 
@@ -25,10 +27,12 @@ namespace Shops {
         [SerializeField] int m_eachNewUnlockableCoreCostFactor = 10;
 
         [SerializeField] ProcessorPurchase[] m_processorPurchases;
+        [SerializeField] SchedulerPurchase[] m_schedulerPurchases;
 
         public int firstUnlockableCoreCost => m_firstUnlockableCoreCost;
         public int eachNewUnlockableCoreCostFactor => m_eachNewUnlockableCoreCostFactor;
         public IEnumerable<ProcessorPurchase> processorPurchases => m_processorPurchases;
+        public IEnumerable<SchedulerPurchase> schedulerPurchases => m_schedulerPurchases;
 
         public IEnumerable<string> categories { get {
             yield return CAT_CORE_UNLOCKS;
@@ -44,6 +48,7 @@ namespace Shops {
                 case CAT_PROCESSORS:
                     return processorPurchases;
                 case CAT_SCHEDULERS:
+                    return schedulerPurchases;
                 case CAT_COOLERS:
                     // TODO these probably feed from serialized lists, so i can easier tweak stuff
                     return emptyItemList;
@@ -58,15 +63,24 @@ namespace Shops {
             foreach(var procPurchase in processorPurchases){
                 yield return procPurchase.name;
             }
+            foreach(var schedPurchase in schedulerPurchases){
+                yield return schedPurchase.name;
+            }
         } }
 
         public void EnsureInitialized () {
             CoreUnlock.EnsureListInitialized(this);
-            for(int i=0; i<m_processorPurchases.Length; i++){
-                var procPurchase = m_processorPurchases[i];
-                procPurchase.SetName($"{CMD_CAT_PROC}{i}");
-            }
+            SetNames(m_processorPurchases, CMD_CAT_PROC);
             Processor.Level.EnsureLevelsInitialized(this);
+            SetNames(m_schedulerPurchases, CMD_CAT_SCHED);
+            Scheduler.Level.EnsureLevelsInitialized(this);
+
+            void SetNames (IList<ComponentPurchase> compPurchases, string prefix) {
+                for(int i=0; i<compPurchases.Count; i++){
+                    var compPurchase = compPurchases[i];
+                    compPurchase.SetName($"{prefix}{i}");
+                }
+            }
         }
 
         public bool TryGetItemForCommand (string itemName, Core core, out Item item) {
@@ -75,12 +89,23 @@ namespace Shops {
                 item = CoreUnlock.allUnlocks[core.index];
                 return true;
             }
-            if(itemName.StartsWith(CMD_CAT_PROC)){
-                item = processorPurchases.Where(pp => pp.name == itemName).FirstOrDefault();
-                return item != null;
+            if(TryGetComponentPurchase(CMD_CAT_PROC, processorPurchases, out item)){
+                return true;
+            }
+            if(TryGetComponentPurchase(CMD_CAT_SCHED, schedulerPurchases, out item)){
+                return true;
             }
             item = default;
             return false;
+
+            bool TryGetComponentPurchase (string prefix, IEnumerable<ComponentPurchase> compPurchases, out Item output) {
+                if(itemName.StartsWith(prefix)){
+                    output = compPurchases.Where(compPurchase => compPurchase.name == itemName).FirstOrDefault();
+                    return output != null;
+                }
+                output = default;
+                return false;
+            }
         }
 
         public bool TryGetItemForComponent (CoreComponent component, out Item item) {
@@ -88,7 +113,8 @@ namespace Shops {
                 item = m_processorPurchases[component.levelIndex];
                 return true;
             }else if(component is Scheduler){
-
+                item = m_schedulerPurchases[component.levelIndex];
+                return true;
             // }else if(component is Cooler){
 
             }
