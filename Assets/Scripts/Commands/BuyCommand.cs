@@ -8,34 +8,32 @@ namespace Commands {
 
         protected override IEnumerable<string> parameterNames { get {
             yield return "item";
-            yield return "coreIndex";
+            yield return "coreIndex (optional)";
         } }
 
         protected override bool TryExecute (string[] parameters, out string message) {
             if(parameters.Length < 1){
-                message = "No paramters given. Please specify an item and the index of the target core.";
-                return false;
-            }
-            if(parameters.Length < 2){
-                message = "No core index given, please also specify the you want to purchase the item for.";
+                message = "No paramters given. Please specify an item and possibly the index of the target core.";
                 return false;
             }
             var itemName = parameters[0];
-            var coreIndexString = parameters[1];
-            var goodParse = int.TryParse(coreIndexString, out var coreIndex);
             var core = default(Cores.Core);
-            if(goodParse){
-                try{
-                    core = GameState.current.cores[coreIndex];
-                }catch(System.IndexOutOfRangeException){
-                    core = default;
-                }catch(System.ArgumentOutOfRangeException){
-                    core = default;
+            if(parameters.Length > 1){
+                var coreIndexString = parameters[1];
+                var goodParse = int.TryParse(coreIndexString, out var coreIndex);
+                if(goodParse){
+                    try{
+                        core = GameState.current.cores[coreIndex];
+                    }catch(System.IndexOutOfRangeException){
+                        core = default;
+                    }catch(System.ArgumentOutOfRangeException){
+                        core = default;
+                    }
                 }
-            }
-            if(!goodParse || core == default){
-                message = $"\"{coreIndexString}\" is not a valid core index.";
-                return false;
+                if(!goodParse || core == default){
+                    message = $"\"{coreIndexString}\" is not a valid core index.";
+                    return false;
+                }
             }
             return ShopDisplay.OnBuyCommand(itemName, core, out message);
         }

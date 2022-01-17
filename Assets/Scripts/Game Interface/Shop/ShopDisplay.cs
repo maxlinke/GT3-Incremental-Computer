@@ -122,7 +122,8 @@ public class ShopDisplay : MonoBehaviour {
         }
 
         RectTransform GetNewSection (string category) {
-            var newSection = new GameObject($"Section {category}", typeof(RectTransform)).transform as RectTransform;
+            var categoryCommand = m_shop.GetCategoryCommand(category);
+            var newSection = new GameObject($"Section {categoryCommand} {category}", typeof(RectTransform)).transform as RectTransform;
             newSection.SetParent(currentPage, false);
             newSection.anchorMin = new Vector2(0, 1);
             newSection.anchorMax = new Vector2(1, 1);
@@ -131,7 +132,7 @@ public class ShopDisplay : MonoBehaviour {
             newSection.anchoredPosition = new Vector2(0, sectionY);
             var sectionHeader = Instantiate(m_sectionHeaderTemplate, newSection);
             sectionHeader.gameObject.SetActive(true);
-            sectionHeader.text = $"<{category.ToUpper()}>";
+            sectionHeader.text = $"{categoryCommand.ToLower()} {category.ToUpper()}";
             elementY = 0;
             elementY -= sectionHeader.preferredHeight;
             elementY -= m_spaceBetweenSectionHeaderAndFirstItem;
@@ -142,7 +143,7 @@ public class ShopDisplay : MonoBehaviour {
     public static IEnumerable<string> GetCommandItemNames () => instance.m_shop.itemNamesForCommands;
 
     private static int GetPriceOfComponent (Cores.Components.CoreComponent component) {
-        if(instance.m_shop.TryGetItemForComponent(component, out var item)){
+        if(instance.m_shop.TryGetBuyItemForComponent(component, out var item)){
             var output = item.price;
             return output;
         }
@@ -150,7 +151,7 @@ public class ShopDisplay : MonoBehaviour {
     }
 
     public static bool OnBuyCommand (string itemName, Cores.Core targetCore, out string message) {
-        if(instance.m_shop.TryGetItemForCommand(itemName, targetCore, out var item)){
+        if(instance.m_shop.TryGetBuyItemForCommand(itemName, out var item)){
             return item.TryPurchase(targetCore, out message);
         }
         message = $"\"{itemName}\" isn't a valid item name!";
@@ -165,6 +166,14 @@ public class ShopDisplay : MonoBehaviour {
             return true;
         }
         message = $"There is no component with the id \"{id}\"!";
+        return false;
+    }
+
+    public static bool OnUpgradeCommand (string itemName, out string message) {
+        if(instance.m_shop.TryGetUpgradeItemForCommand(itemName, out var item)){
+            return item.TryPurchase(itemName, out message);
+        }
+        message = $"\"{itemName}\" is neither a valid item name or component id!";
         return false;
     }
 

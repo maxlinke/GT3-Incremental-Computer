@@ -21,7 +21,7 @@ namespace Shops {
         public void Initialize (Item item) {
             gameObject.SetActive(true);
             this.item = item;
-            SetTextAndUpdateHeight(m_itemNameText, item.name, out var nameHeight);
+            SetTextAndUpdateHeight(m_itemNameText, item.displayName, out var nameHeight);
             var priceString = $"{GameInterfaceElements.Header.CurrencyDisplay.NumberWithPeriods(item.price)} {GameState.CURRENCY_SYMBOL}";
             SetTextAndUpdateHeight(m_priceText, priceString, out var priceHeight);
             SetTextAndUpdateHeight(m_infoText, item.info, out var infoHeight);

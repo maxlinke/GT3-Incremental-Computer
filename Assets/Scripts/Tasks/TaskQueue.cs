@@ -61,6 +61,14 @@ public class TaskQueue : MonoBehaviour {
         return output;
     }
 
+    public void ClearQueue () {
+        foreach(var visTask in m_activeVisualTasks){
+            m_pooledVisualTasks.Enqueue(visTask);
+        }
+        m_activeVisualTasks.Clear();
+        m_updateVisuals = true;
+    }
+
     void LateUpdate () {
         if(m_updateVisuals){
             foreach(var visTask in m_pooledVisualTasks){

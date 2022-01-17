@@ -3,7 +3,7 @@ using Cores;
 
 namespace Shops.Items {
 
-    public class CoreUnlock : Item {
+    public class CoreUnlock : BuyItem {
 
         public static void EnsureListInitialized (Shop shop) {
             if(allUnlocks != null){
@@ -18,11 +18,10 @@ namespace Shops.Items {
 
         public static IReadOnlyList<CoreUnlock> allUnlocks { get; private set; }
 
-        public override string name => m_name;
         public override int price => m_price;
         public override string info => string.Empty;
 
-        public override bool IsPurchaseableAtAll (out string message) {
+        protected override bool IsPurchaseableAtAll (out string message) {
             return PurchaseableForCore(GameState.current.cores[m_coreIndex], out message);
         }
 
@@ -36,16 +35,14 @@ namespace Shops.Items {
         }
 
         protected override void OnPurchased (Core targetCore) {
-            targetCore.Unlock();
+            GameState.current.cores[m_coreIndex].Unlock();
         }
 
         private readonly int m_coreIndex;
-        private readonly string m_name;
         private readonly int m_price;
 
         private CoreUnlock (Shop shop, int index) {
             this.m_coreIndex = index;
-            this.m_name = $"{Shop.CMD_CAT_CORE} {index}";
             if(index == 0){
                 this.m_price = 0;
             }else{                    

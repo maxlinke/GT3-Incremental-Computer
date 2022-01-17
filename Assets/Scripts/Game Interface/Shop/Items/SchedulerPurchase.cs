@@ -5,7 +5,7 @@ using Cores.Components;
 namespace Shops.Items {
 
     [System.Serializable]
-    public class SchedulerPurchase : ComponentPurchase {
+    public class SchedulerPurchase : CoreComponentPurchase {
 
         [SerializeField] Scheduler.Level m_levelData;
 

@@ -10,6 +10,7 @@ namespace Commands {
 
         protected override bool TryExecute (string[] parameters, out string message) {
             GameState.current.running = false;
+            TaskQueue.instance.ClearQueue();
             message = string.Empty;
             return true;
         }

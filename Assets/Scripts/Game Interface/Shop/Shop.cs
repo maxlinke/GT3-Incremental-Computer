@@ -20,6 +20,10 @@ namespace Shops {
         public const string CMD_CAT_SCHED = "sched";
         public const string CMD_CAT_COOLER = "cooler";
 
+        public static string GetUpgradeSuffixForLevel (int level) {
+            return new string('*', level);
+        }
+
         private static readonly IEnumerable<Item> emptyItemList = new List<Item>();
 
         [Header("Cores")]
@@ -40,6 +44,19 @@ namespace Shops {
             yield return CAT_SCHEDULERS;
             yield return CAT_COOLERS;
         } }
+
+        public string GetCategoryCommand (string category) {
+            switch(category){
+                case CAT_CORE_UNLOCKS:
+                case CAT_PROCESSORS:
+                case CAT_SCHEDULERS:
+                case CAT_COOLERS:
+                    return Commands.Command.buyCommandId;
+                default:
+                    Debug.LogError($"Unknown category \"{category}\"!");
+                    return "???";
+            }
+        }
 
         public IEnumerable<Item> GetItemsInCategory (string category) {
             switch(category){
@@ -70,37 +87,37 @@ namespace Shops {
 
         public void EnsureInitialized () {
             CoreUnlock.EnsureListInitialized(this);
+            SetNames(CoreUnlock.allUnlocks, CMD_CAT_CORE);
             SetNames(m_processorPurchases, CMD_CAT_PROC);
             Processor.Level.EnsureLevelsInitialized(this);
             SetNames(m_schedulerPurchases, CMD_CAT_SCHED);
             Scheduler.Level.EnsureLevelsInitialized(this);
 
-            void SetNames (IList<ComponentPurchase> compPurchases, string prefix) {
-                for(int i=0; i<compPurchases.Count; i++){
-                    var compPurchase = compPurchases[i];
+            void SetNames (IReadOnlyList<BuyItem> items, string prefix) {
+                for(int i=0; i<items.Count; i++){
+                    var compPurchase = items[i];
                     compPurchase.SetName($"{prefix}{i}");
                 }
             }
         }
 
-        public bool TryGetItemForCommand (string itemName, Core core, out Item item) {
+        public bool TryGetBuyItemForCommand (string itemName, out BuyItem item) {
             itemName = itemName.ToLower();
-            if(itemName == CMD_CAT_CORE){
-                item = CoreUnlock.allUnlocks[core.index];
+            if(TryGetBuyItem(CMD_CAT_CORE, CoreUnlock.allUnlocks, out item)){
                 return true;
             }
-            if(TryGetComponentPurchase(CMD_CAT_PROC, processorPurchases, out item)){
+            if(TryGetBuyItem(CMD_CAT_PROC, processorPurchases, out item)){
                 return true;
             }
-            if(TryGetComponentPurchase(CMD_CAT_SCHED, schedulerPurchases, out item)){
+            if(TryGetBuyItem(CMD_CAT_SCHED, schedulerPurchases, out item)){
                 return true;
             }
             item = default;
             return false;
 
-            bool TryGetComponentPurchase (string prefix, IEnumerable<ComponentPurchase> compPurchases, out Item output) {
+            bool TryGetBuyItem (string prefix, IEnumerable<BuyItem> items, out BuyItem output) {
                 if(itemName.StartsWith(prefix)){
-                    output = compPurchases.Where(compPurchase => compPurchase.name == itemName).FirstOrDefault();
+                    output = items.Where(compPurchase => compPurchase.name == itemName).FirstOrDefault();
                     return output != null;
                 }
                 output = default;
@@ -108,7 +125,22 @@ namespace Shops {
             }
         }
 
-        public bool TryGetItemForComponent (CoreComponent component, out Item item) {
+        public bool TryGetUpgradeItemForCommand (string itemName, out UpgradeItem item) {
+            // if startswith cmd-cat-core
+            // if startswith task
+            // otherwise look for the component with the id
+            // maybe i should make a dictionary for this? nah, i can just scan the cores, it's not that many...
+            // if component is processor
+            // if component is scheduler
+            // ...
+            // TODO
+            // luckily, since i know which list contains what stuff, i can just do this the easy way
+            Debug.Log("TODO");
+            item = default;
+            return false;
+        }
+
+        public bool TryGetBuyItemForComponent (CoreComponent component, out BuyItem item) {
             if(component is Processor){
                 item = m_processorPurchases[component.levelIndex];
                 return true;

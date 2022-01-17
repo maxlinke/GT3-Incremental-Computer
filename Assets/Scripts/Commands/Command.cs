@@ -9,6 +9,9 @@ namespace Commands {
         public const string helpCommandId = "help";
         public const string shopCommandId = "shop";
 
+        public const string buyCommandId = "buy";
+        public const string upgradeCommandId = "upgrade";
+
         private static List<Command> commands = new List<Command>(){
             new RunCommand(){id = runCommandId},
             new HaltCommand(){id = "halt"},
@@ -16,7 +19,7 @@ namespace Commands {
             new ListCommand(){id = listCommandId},
             new HelpCommand(){id = helpCommandId},
             new ShopCommand(){id = shopCommandId},
-            new BuyCommand(){id = "buy"},
+            new BuyCommand(){id = buyCommandId},
             new SellCommand(){id = "sell"},
             // move
             new SaveCommand(){id = "save"},

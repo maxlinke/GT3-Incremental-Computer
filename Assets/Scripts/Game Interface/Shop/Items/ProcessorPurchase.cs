@@ -5,7 +5,7 @@ using Cores.Components;
 namespace Shops.Items {
 
     [System.Serializable] 
-    public class ProcessorPurchase : ComponentPurchase {
+    public class ProcessorPurchase : CoreComponentPurchase {
 
         [SerializeField] Processor.Level m_actualLevel;
 

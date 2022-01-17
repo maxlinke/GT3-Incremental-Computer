@@ -2,10 +2,7 @@ namespace Shops {
 
     public abstract class Item {
 
-        public bool CurrentlyPurchaseable (out string message) {
-            if(!IsPurchaseableAtAll(out message)){
-                return false;
-            }
+        public virtual bool CurrentlyPurchaseable (out string message) {
             if(GameState.current.currency < price){
                 message = $"Not enough {GameState.CURRENCY_SYMBOL}.";
                 return false;
@@ -14,23 +11,7 @@ namespace Shops {
             return true;
         }
 
-        public bool TryPurchase (Cores.Core targetCore, out string errorMessage) {
-            if(!CurrentlyPurchaseable(out errorMessage)){
-                return false;
-            }
-            if(!PurchaseableForCore(targetCore, out errorMessage)){
-                return false;
-            }
-            GameState.current.currency -= price;
-            OnPurchased(targetCore);
-            return true;
-        }
-
-        public abstract bool IsPurchaseableAtAll (out string message);
-
-        protected abstract bool PurchaseableForCore (Cores.Core targetCore, out string errorMessage);
-
-        protected abstract void OnPurchased (Cores.Core targetCore);
+        public virtual string displayName => name;
 
         public abstract string name { get; }
 

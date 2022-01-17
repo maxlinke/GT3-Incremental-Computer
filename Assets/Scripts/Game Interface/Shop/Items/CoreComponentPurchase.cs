@@ -2,24 +2,26 @@ using UnityEngine;
 
 namespace Shops.Items {
 
-    public abstract class ComponentPurchase : Item {
+    public abstract class CoreComponentPurchase : BuyItem {
         
         [SerializeField] int m_price;
-        
-        [System.NonSerialized] string m_name;
-        public void SetName (string newName) => m_name = newName;
+
+        public override string displayName => $"{name} <core>";
 
         public override int price => m_price;
-        public override string name => m_name;
 
         protected abstract int slotSize { get; }
 
-        public override bool IsPurchaseableAtAll (out string message) { 
+        protected override bool IsPurchaseableAtAll (out string message) { 
             message = default;
             return true;
         }
 
         protected override bool PurchaseableForCore (Cores.Core targetCore, out string errorMessage) {
+            if(targetCore == default){
+                errorMessage = "No core specified!";
+                return false;
+            }
             if(!targetCore.unlocked){
                 errorMessage = $"Core {targetCore.index} isn't unlocked yet!";
                 return false;
