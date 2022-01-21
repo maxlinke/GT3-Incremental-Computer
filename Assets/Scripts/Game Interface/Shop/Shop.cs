@@ -30,8 +30,8 @@ namespace Shops {
         [SerializeField] int m_firstUnlockableCoreCost = 100;
         [SerializeField] int m_eachNewUnlockableCoreCostFactor = 10;
 
-        [SerializeField] ProcessorPurchase[] m_processorPurchases;
-        [SerializeField] SchedulerPurchase[] m_schedulerPurchases;
+        [SerializeField, InlineProperty] ProcessorPurchase[] m_processorPurchases;
+        [SerializeField, InlineProperty] SchedulerPurchase[] m_schedulerPurchases;
 
         public int firstUnlockableCoreCost => m_firstUnlockableCoreCost;
         public int eachNewUnlockableCoreCostFactor => m_eachNewUnlockableCoreCostFactor;

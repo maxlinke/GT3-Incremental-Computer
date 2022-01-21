@@ -12,7 +12,7 @@ namespace Cores.Components {
 
         public void Execute () {
             var taskQueue = TaskQueue.instance;
-            var totalSpace = Level.levels[levelIndex].maxTasksPerCycle; // TODO upgrade this to include the upgrade count, if i ever get that far...
+            var totalSpace = Level.levels[levelIndex].subLevels[upgradeCount].maxTasksPerCycle;
             var spaceRemaining = totalSpace; 
             for(int i=0; i<taskQueue.taskCount; i++){
                 if(taskQueue[i].count <= spaceRemaining){
@@ -33,7 +33,10 @@ namespace Cores.Components {
             public static IReadOnlyList<Level> levels { get; private set; }
 
             [field: SerializeField] public int slotSize { get; private set; }
-            [field: SerializeField] public int maxTasksPerCycle { get; private set; }
+
+            [SerializeField, InlineProperty] private SubLevel [] m_subLevels;
+
+            public IReadOnlyList<SubLevel> subLevels => m_subLevels;
 
             public static void EnsureLevelsInitialized (Shops.Shop shop) {
                 if(levels == null){
@@ -52,6 +55,13 @@ namespace Cores.Components {
                     }
                 }
                 return -1;
+            }
+
+            [System.Serializable]
+            public class SubLevel {
+
+                [field: SerializeField] public int maxTasksPerCycle { get; private set; }
+
             }
 
         }

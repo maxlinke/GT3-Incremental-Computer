@@ -7,7 +7,7 @@ namespace Shops.Items {
     [System.Serializable]
     public class SchedulerPurchase : CoreComponentPurchase {
 
-        [SerializeField] Scheduler.Level m_levelData;
+        [SerializeField, InlineProperty] Scheduler.Level m_levelData;
 
         public Scheduler.Level levelData => m_levelData;
         public override string info => $"{levelData.slotSize} Slots\nTask-Stack: {levelData.taskStackSize}";

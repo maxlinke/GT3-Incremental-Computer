@@ -18,15 +18,30 @@ MonoBehaviour:
   - m_price: 40
     m_actualLevel:
       <slotSize>k__BackingField: 1
-      <maxTasksPerCycle>k__BackingField: 4
+      m_subLevels:
+      - <maxTasksPerCycle>k__BackingField: 4
+      - <maxTasksPerCycle>k__BackingField: 6
+      - <maxTasksPerCycle>k__BackingField: 8
+      - <maxTasksPerCycle>k__BackingField: 10
+      - <maxTasksPerCycle>k__BackingField: 12
   - m_price: 200
     m_actualLevel:
       <slotSize>k__BackingField: 2
-      <maxTasksPerCycle>k__BackingField: 20
+      m_subLevels:
+      - <maxTasksPerCycle>k__BackingField: 50
+      - <maxTasksPerCycle>k__BackingField: 60
+      - <maxTasksPerCycle>k__BackingField: 70
+      - <maxTasksPerCycle>k__BackingField: 80
+      - <maxTasksPerCycle>k__BackingField: 90
   - m_price: 1200
     m_actualLevel:
       <slotSize>k__BackingField: 3
-      <maxTasksPerCycle>k__BackingField: 200
+      m_subLevels:
+      - <maxTasksPerCycle>k__BackingField: 240
+      - <maxTasksPerCycle>k__BackingField: 300
+      - <maxTasksPerCycle>k__BackingField: 360
+      - <maxTasksPerCycle>k__BackingField: 420
+      - <maxTasksPerCycle>k__BackingField: 480
   m_schedulerPurchases:
   - m_price: 10
     m_levelData:
