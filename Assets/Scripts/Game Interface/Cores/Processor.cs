@@ -27,6 +27,7 @@ namespace Cores.Components {
             for(int i=0; i<taskQueue.taskCount; i++){
                 if(taskQueue[i].count <= spaceRemaining){
                     var task = taskQueue.TakeTask(i);
+                    i--;
                     spaceRemaining -= task.count;
                     task.Execute();
                 }
