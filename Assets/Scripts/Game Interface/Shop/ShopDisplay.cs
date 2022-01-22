@@ -91,7 +91,7 @@ public class ShopDisplay : MonoBehaviour {
         var elementY = 0f;
         foreach(var category in m_shop.categories){
             var section = GetNewSection(category);
-            foreach(var item in m_shop.GetItemsInCategory(category)){
+            foreach(var item in category.items){
                 var newDisplay = Instantiate(m_itemDisplayTemplate, section);
                 newDisplay.Initialize(item);
                 newDisplay.rectTranform.anchoredPosition = new Vector2(0, elementY);
@@ -121,9 +121,9 @@ public class ShopDisplay : MonoBehaviour {
             return newPage;
         }
 
-        RectTransform GetNewSection (string category) {
-            var categoryCommand = m_shop.GetCategoryCommand(category);
-            var newSection = new GameObject($"Section {categoryCommand} {category}", typeof(RectTransform)).transform as RectTransform;
+        RectTransform GetNewSection (Shop.Category category) {
+            var sectionName = $"{category.command.ToLower()} {category.name.ToUpper()}";
+            var newSection = new GameObject($"Section {sectionName}", typeof(RectTransform)).transform as RectTransform;
             newSection.SetParent(currentPage, false);
             newSection.anchorMin = new Vector2(0, 1);
             newSection.anchorMax = new Vector2(1, 1);
@@ -132,15 +132,13 @@ public class ShopDisplay : MonoBehaviour {
             newSection.anchoredPosition = new Vector2(0, sectionY);
             var sectionHeader = Instantiate(m_sectionHeaderTemplate, newSection);
             sectionHeader.gameObject.SetActive(true);
-            sectionHeader.text = $"{categoryCommand.ToLower()} {category.ToUpper()}";
+            sectionHeader.text = sectionName;
             elementY = 0;
             elementY -= sectionHeader.preferredHeight;
             elementY -= m_spaceBetweenSectionHeaderAndFirstItem;
             return newSection;
         }
     }
-
-    public static IEnumerable<string> GetCommandItemNames () => instance.m_shop.itemNamesForCommands;
 
     private static int GetPriceOfComponent (Cores.Components.CoreComponent component) {
         if(instance.m_shop.TryGetBuyItemForComponent(component, out var item)){
@@ -169,11 +167,11 @@ public class ShopDisplay : MonoBehaviour {
         return false;
     }
 
-    public static bool OnUpgradeCommand (string itemName, out string message) {
-        if(instance.m_shop.TryGetUpgradeItemForCommand(itemName, out var item)){
-            return item.TryPurchase(itemName, out message);
+    public static bool OnUpgradeCommand (string id, out string message) {
+        if(instance.m_shop.TryGetUpgradeItemForId(id, out var item)){
+            return item.TryPurchase(id, out message);
         }
-        message = $"\"{itemName}\" is neither a valid item name or component id!";
+        message = $"\"{id}\" is neither a valid item name or component id!";
         return false;
     }
 

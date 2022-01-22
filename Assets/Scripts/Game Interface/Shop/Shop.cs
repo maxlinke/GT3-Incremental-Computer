@@ -20,8 +20,15 @@ namespace Shops {
         public const string CMD_CAT_SCHED = "sched";
         public const string CMD_CAT_COOLER = "cooler";
 
-        public static string GetUpgradeSuffixForLevel (int level) {
-            return new string('*', level);
+        public struct Category {
+            public string command;
+            public string name;
+            public IEnumerable<Item> items;
+            public Category (string command, string name, IEnumerable<Item> items){
+                this.command = command;
+                this.name = name;
+                this.items = items;
+            }
         }
 
         private static readonly IEnumerable<Item> emptyItemList = new List<Item>();
@@ -38,51 +45,14 @@ namespace Shops {
         public IEnumerable<ProcessorPurchase> processorPurchases => m_processorPurchases;
         public IEnumerable<SchedulerPurchase> schedulerPurchases => m_schedulerPurchases;
 
-        public IEnumerable<string> categories { get {
-            yield return CAT_CORE_UNLOCKS;
-            yield return CAT_PROCESSORS;
-            yield return CAT_SCHEDULERS;
-            yield return CAT_COOLERS;
-        } }
+        private IReadOnlyList<ComponentUpgrade<Processor>> processorUpgrades;
 
-        public string GetCategoryCommand (string category) {
-            switch(category){
-                case CAT_CORE_UNLOCKS:
-                case CAT_PROCESSORS:
-                case CAT_SCHEDULERS:
-                case CAT_COOLERS:
-                    return Commands.Command.buyCommandId;
-                default:
-                    Debug.LogError($"Unknown category \"{category}\"!");
-                    return "???";
-            }
-        }
-
-        public IEnumerable<Item> GetItemsInCategory (string category) {
-            switch(category){
-                case CAT_CORE_UNLOCKS:
-                    return CoreUnlock.allUnlocks;
-                case CAT_PROCESSORS:
-                    return processorPurchases;
-                case CAT_SCHEDULERS:
-                    return schedulerPurchases;
-                case CAT_COOLERS:
-                    // TODO these probably feed from serialized lists, so i can easier tweak stuff
-                    return emptyItemList;
-                default:
-                    Debug.LogError($"Unknown category \"{category}\"!");
-                    return emptyItemList;
-            }
-        }
-
-        public IEnumerable<string> itemNamesForCommands { get {
-            yield return CMD_CAT_CORE;
-            foreach(var procPurchase in processorPurchases){
-                yield return procPurchase.name;
-            }
-            foreach(var schedPurchase in schedulerPurchases){
-                yield return schedPurchase.name;
-            }
+        public IEnumerable<Category> categories { get {
+            yield return new Category(Commands.Command.buyCommandId, CAT_CORE_UNLOCKS, CoreUnlock.allUnlocks);
+            yield return new Category(Commands.Command.buyCommandId, CAT_PROCESSORS, processorPurchases);
+            yield return new Category(Commands.Command.buyCommandId, CAT_SCHEDULERS, schedulerPurchases);
+            yield return new Category(Commands.Command.buyCommandId, CAT_COOLERS, emptyItemList);   // TODO
+            yield return new Category(Commands.Command.upgradeCommandId, CAT_PROCESSORS, processorUpgrades);
         } }
 
         public void EnsureInitialized () {
@@ -92,12 +62,30 @@ namespace Shops {
             Processor.Level.EnsureLevelsInitialized(this);
             SetNames(m_schedulerPurchases, CMD_CAT_SCHED);
             Scheduler.Level.EnsureLevelsInitialized(this);
+            processorUpgrades = GetUpgradeItems(m_processorPurchases);
 
             void SetNames (IReadOnlyList<BuyItem> items, string prefix) {
                 for(int i=0; i<items.Count; i++){
                     var compPurchase = items[i];
                     compPurchase.SetName($"{prefix}{i}");
                 }
+            }
+
+            IReadOnlyList<ComponentUpgrade<T>> GetUpgradeItems<T, U> (IReadOnlyList<IUpgradeSource<T, U>> upgradeSources) 
+                where T : IUpgradeable<U>
+                where U : IUpgrade
+            {
+                var output = new List<ComponentUpgrade<T>>();
+                for(int i=0; i<upgradeSources.Count(); i++){
+                    var upgradeSource = upgradeSources[i];
+                    output.Add(new UpgradeableComponentUpgrade<T, U>(
+                        name: $"{typeof(T).Name} Level {(i+1)}",
+                        typeName: typeof(T).Name,
+                        upgrades: upgradeSource.upgrades,
+                        price: upgradeSource.upgradeCost
+                    ));
+                }
+                return output;
             }
         }
 
@@ -125,17 +113,24 @@ namespace Shops {
             }
         }
 
-        public bool TryGetUpgradeItemForCommand (string itemName, out UpgradeItem item) {
-            // if startswith cmd-cat-core
-            // if startswith task
-            // otherwise look for the component with the id
-            // maybe i should make a dictionary for this? nah, i can just scan the cores, it's not that many...
-            // if component is processor
-            // if component is scheduler
-            // ...
-            // TODO
-            // luckily, since i know which list contains what stuff, i can just do this the easy way
-            Debug.Log("TODO");
+        public bool TryGetUpgradeItemForId (string id, out UpgradeItem item) {
+            if(id.StartsWith(CMD_CAT_CORE)){
+                // i can just directly return the thing and the item decides whether it's a valid index...
+
+                // var coreIndexString = id.Remove(0, CMD_CAT_CORE.Length);
+                // if(GameState.current.TryFindCoreForIndex(coreIndexString, out _)){
+                //     // return core upgrade item
+                // }
+            }else if(GameState.current.TryFindComponentForId(id, out var foundComponent)){
+                if(foundComponent is Processor processor){
+                    item = processorUpgrades[processor.levelIndex];
+                    return true;
+                }else if(foundComponent is Scheduler scheduler){
+
+                // }else if(foundComponent is Cooler cooler){
+
+                }
+            }
             item = default;
             return false;
         }

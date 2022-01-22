@@ -20,8 +20,9 @@ namespace Cores.Components {
             base.Initialize(processor);
             this.processor = processor;
             processor.onExecute += OnExecute;
+            processor.onUpgraded += OnUpgraded;
             m_usageImage.SetGOActive(false);
-            m_text.text = $"PRC {this.processor.id}";
+            OnUpgraded(processor.upgradeCount);
         }
 
         void OnExecute (float usageLevel) {
@@ -29,6 +30,10 @@ namespace Cores.Components {
             m_executing = true;
             m_newImageState = true;
             m_usageLevel = usageLevel;
+        }
+
+        void OnUpgraded (int upgradeLevel) {
+            m_text.text = $"PRC {this.processor.id} {GameState.GetUpgradeIndicator(upgradeLevel)}";
         }
 
         void LateUpdate () {

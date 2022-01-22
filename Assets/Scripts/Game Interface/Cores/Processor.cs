@@ -4,11 +4,21 @@ using System.Collections.Generic;
 namespace Cores.Components {
 
     [System.Serializable]
-    public class Processor : CoreComponent {
+    public class Processor : CoreComponent, IUpgradeable<Processor.Level.SubLevel> {
 
         public Processor (Core core, ID id, int slotIndex) : base(core, id, slotIndex) { }
 
         public override int slotSize => Level.levels[levelIndex].slotSize;
+
+        public event System.Action<float> onExecute = delegate {};
+        public event System.Action<int> onUpgraded = delegate {};
+        
+        int IUpgradeable<Level.SubLevel>.currentUpgradeLevel => upgradeCount;
+
+        void IUpgradeable<Level.SubLevel>.Upgrade () {
+            upgradeCount++;
+            onUpgraded(upgradeCount);
+        }
 
         public void Execute () {
             var taskQueue = TaskQueue.instance;
@@ -24,8 +34,6 @@ namespace Cores.Components {
             var usageLevel = 1f - ((float)spaceRemaining / totalSpace);
             onExecute(usageLevel);
         }
-
-        public event System.Action<float> onExecute = delegate {};
 
         [System.Serializable]
         public class Level {
@@ -58,10 +66,11 @@ namespace Cores.Components {
             }
 
             [System.Serializable]
-            public class SubLevel {
+            public class SubLevel : IUpgrade {
 
                 [field: SerializeField] public int maxTasksPerCycle { get; private set; }
 
+                public string description => $"{maxTasksPerCycle} Tasks/Cycle";
             }
 
         }

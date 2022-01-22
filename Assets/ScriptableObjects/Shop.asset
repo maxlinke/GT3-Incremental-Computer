@@ -16,6 +16,7 @@ MonoBehaviour:
   m_eachNewUnlockableCoreCostFactor: 10
   m_processorPurchases:
   - m_price: 40
+    m_upgradeCost: 20
     m_actualLevel:
       <slotSize>k__BackingField: 1
       m_subLevels:
@@ -25,15 +26,17 @@ MonoBehaviour:
       - <maxTasksPerCycle>k__BackingField: 10
       - <maxTasksPerCycle>k__BackingField: 12
   - m_price: 200
+    m_upgradeCost: 50
     m_actualLevel:
       <slotSize>k__BackingField: 2
       m_subLevels:
+      - <maxTasksPerCycle>k__BackingField: 40
       - <maxTasksPerCycle>k__BackingField: 50
       - <maxTasksPerCycle>k__BackingField: 60
       - <maxTasksPerCycle>k__BackingField: 70
       - <maxTasksPerCycle>k__BackingField: 80
-      - <maxTasksPerCycle>k__BackingField: 90
   - m_price: 1200
+    m_upgradeCost: 300
     m_actualLevel:
       <slotSize>k__BackingField: 3
       m_subLevels:

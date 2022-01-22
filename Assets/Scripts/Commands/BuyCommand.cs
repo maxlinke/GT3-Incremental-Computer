@@ -20,17 +20,7 @@ namespace Commands {
             var core = default(Cores.Core);
             if(parameters.Length > 1){
                 var coreIndexString = parameters[1];
-                var goodParse = int.TryParse(coreIndexString, out var coreIndex);
-                if(goodParse){
-                    try{
-                        core = GameState.current.cores[coreIndex];
-                    }catch(System.IndexOutOfRangeException){
-                        core = default;
-                    }catch(System.ArgumentOutOfRangeException){
-                        core = default;
-                    }
-                }
-                if(!goodParse || core == default){
+                if(!GameState.current.TryFindCoreForIndex(coreIndexString, out core)){
                     message = $"\"{coreIndexString}\" is not a valid core index.";
                     return false;
                 }

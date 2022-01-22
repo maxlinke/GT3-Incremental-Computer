@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Cores;
+
 namespace Shops.Items {
 
     public abstract class ComponentUpgrade<T> : UpgradeItem {
@@ -16,35 +19,68 @@ namespace Shops.Items {
                 errorMessage = $"Found no {targetTypeName} with id \"{targetId}\"!";
                 return false;
             }
+            if(!CanBeUpgraded(target)){
+                errorMessage = $"{targetTypeName} \"{targetId}\" can't be upgraded!";
+                return false;
+            }
             GameState.current.currency -= price;
             OnPurchased(target);
             return true;
         }
 
-        protected abstract bool TryFindTargetForId (string targetId, out T target);
+        protected virtual bool TryFindTargetForId (string targetId, out T target) {
+            if(GameState.current.TryFindComponentForId(targetId, out var foundComponent)){
+                if(foundComponent is T foundT){
+                    target = foundT;
+                    return true;
+                }
+            }
+            target = default;
+            return false;
+        }
+
+        protected abstract bool CanBeUpgraded (T target);
 
         protected abstract void OnPurchased (T target);
 
     }
 
-    // TODO buy core 0 -> buy core0
-    // because upgrade core0
-    // upgrade only comes with an id
-    // so buy <itemName> <id> => buy <itemName> <id (optional)>
-    // because coreunlock would only need the itemname
+    public class UpgradeableComponentUpgrade<T, U> : ComponentUpgrade<T>
+        where T : IUpgradeable<U>
+        where U : IUpgrade
+    {
 
-    // TODO subclass coreupgrade
-    // TODO subclass componentupgrade
-    //      -> processor, scheduler, ... upgrades. 
-    //         those are serialized to the purchases per level
-    //         the actual upgrade data lives in the real class again
-    //         names get generated after the purchases
-    //         proc0*, proc0**, proc0***
+        public UpgradeableComponentUpgrade (string name, string typeName, IEnumerable<U> upgrades, int price) : base () {
+            m_price = price;
+            var infoSb = new System.Text.StringBuilder();
+            var i = 0;
+            foreach(var upgrade in upgrades){
+                if(i>0){
+                    infoSb.AppendLine($"{i}{GameState.UPGRADE_SYMBOL} - {upgrade.description}");
+                }
+                i++;
+            }
+            m_maxLevel = i - 1;
+            m_info = infoSb.ToString().Trim();
+            m_name = name;
+            m_targetTypeName = typeName;
+        }
 
-    // WAIT
-    // upgrade 01 -> 01 is a processor at level 0, so upgrade it to level 1
-    // upgrade core0 -> core0 is a core
-    // upgrade task
-    // so it DOES work!!!
+        int m_price;
+        int m_maxLevel;
+        string m_info;
+        string m_name;
+        string m_targetTypeName;
+
+        public override string targetTypeName => m_targetTypeName;
+        public override string name => m_name;
+        public override int price => m_price;
+        public override string info => m_info;
+
+        protected override bool CanBeUpgraded (T target) => target.currentUpgradeLevel < m_maxLevel;
+
+        protected override void OnPurchased (T target) => target.Upgrade();
+
+    }
 
 }

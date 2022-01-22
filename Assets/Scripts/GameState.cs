@@ -9,6 +9,12 @@ public class GameState {
 
     public const string CURRENCY_SYMBOL = "CR";
 
+    public const char UPGRADE_SYMBOL = '*';
+
+    public static string GetUpgradeIndicator (int upgrades) {
+        return new string(UPGRADE_SYMBOL, upgrades);
+    }
+
     public GameState () {
         m_currency = 0;
         m_running = false;
@@ -78,6 +84,33 @@ public class GameState {
         }
         output = default;
         return false;
+    }
+
+    public CoreComponent GetCoreComponentForId (string id) {
+        if(TryFindComponentForId(id, out var output)){
+           return output; 
+        }
+        return default;
+    }
+
+    public bool TryFindCoreForIndex (string index, out Core core) {
+        var goodParse = int.TryParse(index, out var coreIndex);
+        if(goodParse){
+            return TryFindCoreForIndex(coreIndex, out core);
+        }
+        core = default;
+        return false;
+    }
+
+    public bool TryFindCoreForIndex (int index, out Core core) {
+        try{
+            core = GameState.current.cores[index];
+        }catch(System.IndexOutOfRangeException){
+            core = default;
+        }catch(System.ArgumentOutOfRangeException){
+            core = default;
+        }
+        return core != default;
     }
 
 }
