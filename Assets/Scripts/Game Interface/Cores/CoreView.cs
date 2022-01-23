@@ -32,6 +32,7 @@ namespace Cores {
         [SerializeField, RedIfEmpty] Slot m_slotTemplate;
         [SerializeField, RedIfEmpty] ProcessorView m_processorTemplate;
         [SerializeField, RedIfEmpty] SchedulerView m_schedulerTemplate;
+        [SerializeField, RedIfEmpty] CoolerView m_coolerTemplate;
 
         public int index { get; private set; }
         public Core core { get; private set; }
@@ -121,23 +122,32 @@ namespace Cores {
             foreach(var sched in core.schedulers){
                 AddComponent(sched);
             }
+            foreach(var cool in core.coolers){
+                AddComponent(cool);
+            }
         }
 
         void AddComponent (CoreComponent component) {
             if(component is Processor proc){
-                var newProc = Instantiate(m_processorTemplate, m_slotArea);
-                newProc.SetGOActive(true);
-                newProc.Initialize(proc);
-                m_compViews.Add(newProc);
+                CreateView(proc, m_processorTemplate);
             }else if(component is Scheduler sched){
-                var newSched = Instantiate(m_schedulerTemplate, m_slotArea);
-                newSched.SetGOActive(true);
-                newSched.Initialize(sched);
-                m_compViews.Add(newSched);
+                CreateView(sched, m_schedulerTemplate);
+            }else if(component is Cooler cool){
+                CreateView(cool, m_coolerTemplate);
             }else{
-                // ...
+                Debug.LogError($"Was asked to add {component.GetType().Name} but that's not handled...");
             }
             m_redoInternalLayout = true;
+
+            void CreateView<T, U> (T comp, U template)
+                where T : CoreComponent
+                where U : CoreComponentView<T>
+            {
+                var newView = Instantiate(template, m_slotArea);
+                newView.SetGOActive(true);
+                newView.Initialize(comp);
+                m_compViews.Add(newView);
+            }
         }
 
         void RemoveView (CoreComponentView viewToRemove) {
@@ -181,6 +191,7 @@ namespace Cores {
         void InitVisualComponents () {
             m_processorTemplate.SetGOActive(false);
             m_schedulerTemplate.SetGOActive(false);
+            m_coolerTemplate.SetGOActive(false);
             m_compViews = new List<CoreComponentView>();
         }
 
