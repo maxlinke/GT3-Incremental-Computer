@@ -39,7 +39,7 @@ public class GameState {
     private static GameState _current = new GameState();
     public static GameState current {
         get => _current;
-        set => OnValueSet(value, value, ref _current, (gs) => {onGameStateChanged(gs); Debug.Log("gs change");});
+        set => OnValueSet(value, value, ref _current, onGameStateChanged);
     }
 
     public static event System.Action<GameState> onGameStateChanged = delegate {};

@@ -30,6 +30,29 @@ namespace Commands {
 
         public static IEnumerable<Command> allCommands => commands;
 
+        public static bool moneyCheatEnabled { 
+            get {
+                foreach(var command in commands){
+                    if(command is CheatMoneyCommand){
+                        return true;
+                    }
+                }
+                return false;
+            } set {
+                if(value != moneyCheatEnabled){
+                    if(value){
+                        commands.Add(new CheatMoneyCommand(){id = "givememoney"});
+                    }else{
+                        for(int i=commands.Count-1; i>=0; i--){
+                            if(commands[i] is CheatMoneyCommand){
+                                commands.RemoveAt(i);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         protected Command () { }
 
         public string id { get; private set; }

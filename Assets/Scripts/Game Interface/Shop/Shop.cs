@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Cores;
 using Cores.Components;
@@ -9,6 +8,9 @@ using Shops.Items;
 namespace Shops {
 
     public class Shop : ScriptableObject {
+
+        private static string CMD_BUY => Commands.Command.buyCommandId;
+        private static string CMD_UPGRADE => Commands.Command.upgradeCommandId;
 
         public const string CAT_CORE_UNLOCKS = "Core Unlocks";
         public const string CAT_PROCESSORS = "Processors";
@@ -47,11 +49,11 @@ namespace Shops {
         private IReadOnlyList<ComponentUpgrade<Processor>> processorUpgrades;
 
         public IEnumerable<Category> categories { get {
-            yield return new Category(Commands.Command.buyCommandId, CAT_CORE_UNLOCKS, CoreUnlock.allUnlocks);
-            yield return new Category(Commands.Command.buyCommandId, CAT_PROCESSORS, m_processorPurchases);
-            yield return new Category(Commands.Command.buyCommandId, CAT_SCHEDULERS, m_schedulerPurchases);
-            yield return new Category(Commands.Command.buyCommandId, CAT_COOLERS, m_coolerPurchases);
-            yield return new Category(Commands.Command.upgradeCommandId, CAT_PROCESSORS, processorUpgrades);
+            yield return new Category(CMD_BUY, CAT_CORE_UNLOCKS, CoreUnlock.allUnlocks);
+            yield return new Category(CMD_BUY, CAT_PROCESSORS, m_processorPurchases);
+            yield return new Category(CMD_BUY, CAT_SCHEDULERS, m_schedulerPurchases);
+            yield return new Category(CMD_BUY, CAT_COOLERS, m_coolerPurchases);
+            yield return new Category(CMD_UPGRADE, CAT_PROCESSORS, processorUpgrades);
         } }
 
         public void EnsureInitialized () {
@@ -92,34 +94,18 @@ namespace Shops {
 
         public bool TryGetBuyItemForCommand (string itemName, out BuyItem item) {
             itemName = itemName.ToLower();
-            // foreach(var category in categories){ // TODO refactor categories a little to make this possible
-            //     if(category.command == Commands.Command.buyCommandId){
-            //         if(category.
-            //     }
-            // }
-            if(TryGetBuyItem(CMD_CAT_CORE, CoreUnlock.allUnlocks, out item)){
-                return true;
-            }
-            if(TryGetBuyItem(CMD_CAT_PROC, m_processorPurchases, out item)){
-                return true;
-            }
-            if(TryGetBuyItem(CMD_CAT_SCHED, m_schedulerPurchases, out item)){
-                return true;
-            }
-            if(TryGetBuyItem(CMD_CAT_COOLER, m_coolerPurchases, out item)){
-                return true;
+            foreach(var category in categories){
+                if(category.command == Commands.Command.buyCommandId){
+                    foreach(var catItem in category.items){
+                        if(catItem.name == itemName){
+                            item = catItem as BuyItem;
+                            return true;
+                        }
+                    }
+                }
             }
             item = default;
             return false;
-
-            bool TryGetBuyItem (string prefix, IEnumerable<BuyItem> items, out BuyItem output) {
-                if(itemName.StartsWith(prefix)){
-                    output = items.Where(compPurchase => compPurchase.name == itemName).FirstOrDefault();
-                    return output != null;
-                }
-                output = default;
-                return false;
-            }
         }
 
         public bool TryGetUpgradeItemForId (string id, out UpgradeItem item) {

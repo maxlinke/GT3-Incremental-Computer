@@ -6,14 +6,12 @@ using UnityEditor;
 
 public class GameManager : MonoBehaviour {
 
+    const string CHEAT_COMMAND_ARG = "enable_cheats";
     const string autoSaveFileName = "autoSave";
 
     [SerializeField, RedIfEmpty] InputHandler m_inputHandler;
     [SerializeField, RedIfEmpty] GameInterface m_interface;
     [SerializeField, RedIfEmpty] PopupDialogue m_popupDialogue;
-
-    [SerializeField] int m_debugCurrencyGainPerFrame;
-    [SerializeField] int m_debugInitCurrency;
 
     void Start () {
         Application.targetFrameRate = 60;
@@ -26,21 +24,26 @@ public class GameManager : MonoBehaviour {
                 $"Have fun!\n"
             );
         }
-        if(m_debugInitCurrency != 0){
-            GameState.current.currency += m_debugInitCurrency;
-        }
-    }
-
-    void Update () {
-        if(m_debugCurrencyGainPerFrame != 0){
-            GameState.current.currency += m_debugCurrencyGainPerFrame;
-        }
+        Commands.Command.moneyCheatEnabled = MoneyCheatShouldBeEnabled();
     }
 
     void InitGameComponents () {
         m_inputHandler.Initialize();
         m_interface.Initialize();
         m_popupDialogue.Initialize();
+    }
+
+    bool MoneyCheatShouldBeEnabled () {
+#if UNITY_EDITOR
+        return true;
+#else
+        foreach(var cmdArg in System.Environment.GetCommandLineArgs()){
+            if(cmdArg.Trim().ToLower().Equals(CHEAT_COMMAND_ARG.ToLower())){
+                return true;
+            }
+        }
+        return false;
+#endif
     }
 
 }
