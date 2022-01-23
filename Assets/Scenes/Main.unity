@@ -4757,7 +4757,7 @@ MonoBehaviour:
   m_interface: {fileID: 1876032469}
   m_popupDialogue: {fileID: 1138230271}
   m_debugCurrencyGainPerFrame: 0
-  m_debugInitCurrency: 100
+  m_debugInitCurrency: 100000
 --- !u!4 &2070748863
 Transform:
   m_ObjectHideFlags: 0

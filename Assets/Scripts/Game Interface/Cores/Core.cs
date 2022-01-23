@@ -10,17 +10,27 @@ namespace Cores {
 
         public const int SLOT_COUNT = 6;
 
-        private const float MAX_TEMPERATURE = 100;
+        private const float MAX_TEMPERATURE = 115;
         private const float DEFAULT_COOLDOWN_IMPULSE_STRENGTH = 0.001f;
 
         public const bool START_ON_PROCESSOR_CYCLE = false;
         public const float TEMP_CYCLES_PER_SECOND = 2f;
 
+        public struct TemperatureImpulse {
+            public float targetTemperature;
+            public float impulseStrength;
+        }
+
+        private static readonly TemperatureImpulse defaultCoolImpulse = new TemperatureImpulse(){
+            targetTemperature = GameState.DEFAULT_TEMPERATURE,
+            impulseStrength = DEFAULT_COOLDOWN_IMPULSE_STRENGTH
+        };
+
         public static Core GetInitialCore (System.Func<ID> getNewId) {
             var output = new Core();
             output.unlocked = true;
-            output.m_processors.Add(new Processor(output, getNewId(), output.nextFreeSlotIndex));
-            output.m_schedulers.Add(new Scheduler(output, getNewId(), output.nextFreeSlotIndex));
+            output.AddComponent<Processor>(getNewId(), 0, output.m_processors);
+            output.AddComponent<Scheduler>(getNewId(), 0, output.m_schedulers);
             return output;
         }
 
@@ -43,7 +53,7 @@ namespace Cores {
 
         [SerializeField] private List<Processor> m_processors;
         [SerializeField] private List<Scheduler> m_schedulers;
-        // TODO coolers
+        [SerializeField] private List<Cooler> m_coolers;
 
         public int index { get {
             for(int i=0; i<GameState.current.cores.Count; i++){
@@ -56,6 +66,7 @@ namespace Cores {
 
         public IReadOnlyList<Processor> processors => m_processors;
         public IReadOnlyList<Scheduler> schedulers => m_schedulers;
+        public IReadOnlyList<Cooler> coolers => m_coolers;
         
         public event System.Action<bool> onRunStateChanged = delegate {};
         public event System.Action onLayoutChanged = delegate {};
@@ -70,6 +81,7 @@ namespace Cores {
             isOnProcessorCycle = START_ON_PROCESSOR_CYCLE;
             m_processors = new List<Processor>();
             m_schedulers = new List<Scheduler>();
+            m_coolers = new List<Cooler>();
         }
 
         public float temperatureSpeedFactor { get {
@@ -90,6 +102,9 @@ namespace Cores {
             foreach(var scheduler in schedulers){
                 yield return scheduler;
             }
+            foreach(var cooler in coolers){
+                yield return cooler;
+            }
         } }
 
         public int remainingSlots { get {
@@ -108,7 +123,7 @@ namespace Cores {
 
         void ISerializationCallbackReceiver.OnAfterDeserialize () {
             foreach(var component in components){
-                component.PostDeserializeInit(this);
+                component.SetCore(this);
             }
         }
 
@@ -153,11 +168,14 @@ namespace Cores {
         }
 
         public void OnFixedUpdate () {
-            AddTemperatureImpulse(GameState.DEFAULT_TEMPERATURE, DEFAULT_COOLDOWN_IMPULSE_STRENGTH);
+            AddTemperatureImpulse(defaultCoolImpulse);
+            foreach(var cooler in coolers){
+                AddTemperatureImpulse(cooler.GetCoolImpulse());
+            }
         }
 
-        public void AddTemperatureImpulse (float targetTemperature, float impulseStrength) {
-            temperature = Mathf.Lerp(temperature, targetTemperature, impulseStrength);
+        public void AddTemperatureImpulse (TemperatureImpulse impulse) {
+            temperature = Mathf.Lerp(temperature, impulse.targetTemperature, impulse.impulseStrength);
         }
 
         public void Unlock () {
@@ -168,20 +186,27 @@ namespace Cores {
         }
 
         public void AddProcessor (int level) {
-            var newProcessor = new Processor(this, ID.GetNext(), nextFreeSlotIndex);
-            newProcessor.levelIndex = level;
-            m_processors.Add(newProcessor);
-            onLayoutChanged();
+            AddComponent<Processor>(ID.GetNext(), level, m_processors);
         }
 
         public void AddScheduler (int level) {
-            var newScheduler = new Scheduler(this, ID.GetNext(), nextFreeSlotIndex);
-            newScheduler.levelIndex = level;
-            m_schedulers.Add(newScheduler);
-            onLayoutChanged();
+            AddComponent<Scheduler>(ID.GetNext(), level, m_schedulers);
         }
 
-        // TODO cooler
+        public void AddCooler (int level) {
+            AddComponent<Cooler>(ID.GetNext(), level, m_coolers);
+        }
+
+        void AddComponent<T> (ID id, int level, IList<T> targetList) where T : CoreComponent, new() {
+            var newT = new T();
+            newT.SetCore(this);
+            newT.id = id;
+            newT.slotIndex = nextFreeSlotIndex;
+            newT.levelIndex = level;
+            newT.upgradeCount = 0;
+            targetList.Add(newT);
+            onLayoutChanged();
+        }
 
         public void RemoveComponent (CoreComponent removeComponent) {
             bool removed;
@@ -189,8 +214,8 @@ namespace Cores {
                 removed = m_processors.Remove(processor);
             }else if(removeComponent is Scheduler scheduler){
                 removed = m_schedulers.Remove(scheduler);
-            // }else if(removeComponent is Cooler cooler){
-            // // TODO
+            }else if(removeComponent is Cooler cooler){
+                removed = m_coolers.Remove(cooler);
             }else{
                 removed = false;
             }

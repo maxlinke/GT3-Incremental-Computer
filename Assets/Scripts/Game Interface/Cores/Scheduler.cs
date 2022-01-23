@@ -6,8 +6,6 @@ namespace Cores.Components {
     [System.Serializable]
     public class Scheduler : CoreComponent {
 
-        public Scheduler (Core core, ID id, int slotIndex) : base(core, id, slotIndex) { }
-
         public override int slotSize => 1;
 
         public event System.Action onExecute = delegate {};
@@ -30,23 +28,8 @@ namespace Cores.Components {
             [field: SerializeField] public int slotSize { get; private set; }
             [field: SerializeField] public int taskStackSize { get; private set; }
 
-            public static void EnsureLevelsInitialized (Shops.Shop shop) {
-                if(levels == null){
-                    var list = new List<Level>();
-                    foreach(var sched in shop.schedulerPurchases){
-                        list.Add(sched.levelData);
-                    }
-                    levels = list;
-                }
-            }
-
-            public static int LevelIndex (Level level) {
-                for(int i=0; i<levels.Count; i++){
-                    if(levels[i] == level){
-                        return i;
-                    }
-                }
-                return -1;
+            public static void EnsureLevelsInitialized (IEnumerable<Level> inputLevels) {
+                levels = levels ?? new List<Level>(inputLevels);
             }
 
         }

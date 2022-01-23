@@ -6,7 +6,7 @@ public class ID {
 
     public const int ID_COUNT = 256;
 
-    public static List<ID> GetNewIDQueue () {
+    public static List<ID> CreateNewIDQueue () {
         var output = new List<ID>();
         for(int i=0; i<ID.ID_COUNT; i++){
             output.Add(new ID(i));

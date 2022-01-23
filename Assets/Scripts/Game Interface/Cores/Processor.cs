@@ -6,8 +6,6 @@ namespace Cores.Components {
     [System.Serializable]
     public class Processor : CoreComponent, IUpgradeable<Processor.Level.SubLevel> {
 
-        public Processor (Core core, ID id, int slotIndex) : base(core, id, slotIndex) { }
-
         public override int slotSize => Level.levels[levelIndex].slotSize;
 
         public event System.Action<float> onExecute = delegate {};
@@ -34,7 +32,11 @@ namespace Cores.Components {
                 }
             }
             var usageLevel = 1f - ((float)spaceRemaining / totalSpace);
-            core.AddTemperatureImpulse(currentLevel.cycleTemperatureImpulseTarget, currentLevel.cycleTemperatureImpulseStrength * usageLevel);
+            var heatImpulse = new Core.TemperatureImpulse(){
+                targetTemperature = GameState.DEFAULT_TEMPERATURE + currentLevel.temperatureDelta,
+                impulseStrength = currentLevel.heatImpulseStrength * usageLevel
+            };
+            core.AddTemperatureImpulse(heatImpulse);
             onExecute(usageLevel);
         }
 
@@ -44,29 +46,14 @@ namespace Cores.Components {
             public static IReadOnlyList<Level> levels { get; private set; }
 
             [field: SerializeField] public int slotSize { get; private set; }
-            [field: SerializeField] public float cycleTemperatureImpulseTarget { get; private set; }
-            [field: SerializeField] public float cycleTemperatureImpulseStrength { get; private set; }
+            [field: SerializeField] public float temperatureDelta { get; private set; }
+            [field: SerializeField] public float heatImpulseStrength { get; private set; }
             [SerializeField, InlineProperty] private SubLevel[] m_subLevels;
 
             public IReadOnlyList<SubLevel> subLevels => m_subLevels;
 
-            public static void EnsureLevelsInitialized (Shops.Shop shop) {
-                if(levels == null){
-                    var list = new List<Level>();
-                    foreach(var proc in shop.processorPurchases){
-                        list.Add(proc.levelData);
-                    }
-                    levels = list;
-                }
-            }
-
-            public static int LevelIndex (Level level) {
-                for(int i=0; i<levels.Count; i++){
-                    if(levels[i] == level){
-                        return i;
-                    }
-                }
-                return -1;
+            public static void EnsureLevelsInitialized (IEnumerable<Level> inputLevels) {
+                levels = levels ?? new List<Level>(inputLevels);
             }
 
             [System.Serializable]

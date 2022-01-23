@@ -18,7 +18,7 @@ public class GameState {
     public GameState () {
         m_currency = 0;
         m_running = false;
-        m_idQueue = ID.GetNewIDQueue();
+        m_idQueue = ID.CreateNewIDQueue();
         m_tasks = new List<Tasks.Task>();
         m_cores = new Core[CoreDisplay.NUMBER_OF_CORES];
         m_cores[0] = Core.GetInitialCore(() => ID.GetNext(m_idQueue));

@@ -39,29 +39,30 @@ namespace Shops {
 
         [SerializeField, InlineProperty] ProcessorPurchase[] m_processorPurchases;
         [SerializeField, InlineProperty] SchedulerPurchase[] m_schedulerPurchases;
+        [SerializeField, InlineProperty] CoolerPurchase[] m_coolerPurchases;
 
         public int firstUnlockableCoreCost => m_firstUnlockableCoreCost;
         public int eachNewUnlockableCoreCostFactor => m_eachNewUnlockableCoreCostFactor;
-        public IEnumerable<ProcessorPurchase> processorPurchases => m_processorPurchases;
-        public IEnumerable<SchedulerPurchase> schedulerPurchases => m_schedulerPurchases;
 
         private IReadOnlyList<ComponentUpgrade<Processor>> processorUpgrades;
 
         public IEnumerable<Category> categories { get {
             yield return new Category(Commands.Command.buyCommandId, CAT_CORE_UNLOCKS, CoreUnlock.allUnlocks);
-            yield return new Category(Commands.Command.buyCommandId, CAT_PROCESSORS, processorPurchases);
-            yield return new Category(Commands.Command.buyCommandId, CAT_SCHEDULERS, schedulerPurchases);
-            yield return new Category(Commands.Command.buyCommandId, CAT_COOLERS, emptyItemList);   // TODO
+            yield return new Category(Commands.Command.buyCommandId, CAT_PROCESSORS, m_processorPurchases);
+            yield return new Category(Commands.Command.buyCommandId, CAT_SCHEDULERS, m_schedulerPurchases);
+            yield return new Category(Commands.Command.buyCommandId, CAT_COOLERS, m_coolerPurchases);
             yield return new Category(Commands.Command.upgradeCommandId, CAT_PROCESSORS, processorUpgrades);
         } }
 
         public void EnsureInitialized () {
             CoreUnlock.EnsureListInitialized(this);
             SetNames(CoreUnlock.allUnlocks, CMD_CAT_CORE);
+            Processor.Level.EnsureLevelsInitialized(m_processorPurchases.Select(pp => pp.levelData));
             SetNames(m_processorPurchases, CMD_CAT_PROC);
-            Processor.Level.EnsureLevelsInitialized(this);
+            Scheduler.Level.EnsureLevelsInitialized(m_schedulerPurchases.Select(sp => sp.levelData));
             SetNames(m_schedulerPurchases, CMD_CAT_SCHED);
-            Scheduler.Level.EnsureLevelsInitialized(this);
+            Cooler.Level.EnsureLevelsInitialized(m_coolerPurchases.Select(cp => cp.levelData));
+            SetNames(m_coolerPurchases, CMD_CAT_COOLER);
             processorUpgrades = GetUpgradeItems(m_processorPurchases);
 
             void SetNames (IReadOnlyList<BuyItem> items, string prefix) {
@@ -76,7 +77,7 @@ namespace Shops {
                 where U : IUpgrade
             {
                 var output = new List<ComponentUpgrade<T>>();
-                for(int i=0; i<upgradeSources.Count(); i++){
+                for(int i=0; i<upgradeSources.Count; i++){
                     var upgradeSource = upgradeSources[i];
                     output.Add(new UpgradeableComponentUpgrade<T, U>(
                         name: $"{typeof(T).Name} Level {(i+1)}",
@@ -91,13 +92,21 @@ namespace Shops {
 
         public bool TryGetBuyItemForCommand (string itemName, out BuyItem item) {
             itemName = itemName.ToLower();
+            // foreach(var category in categories){ // TODO refactor categories a little to make this possible
+            //     if(category.command == Commands.Command.buyCommandId){
+            //         if(category.
+            //     }
+            // }
             if(TryGetBuyItem(CMD_CAT_CORE, CoreUnlock.allUnlocks, out item)){
                 return true;
             }
-            if(TryGetBuyItem(CMD_CAT_PROC, processorPurchases, out item)){
+            if(TryGetBuyItem(CMD_CAT_PROC, m_processorPurchases, out item)){
                 return true;
             }
-            if(TryGetBuyItem(CMD_CAT_SCHED, schedulerPurchases, out item)){
+            if(TryGetBuyItem(CMD_CAT_SCHED, m_schedulerPurchases, out item)){
+                return true;
+            }
+            if(TryGetBuyItem(CMD_CAT_COOLER, m_coolerPurchases, out item)){
                 return true;
             }
             item = default;
@@ -127,7 +136,7 @@ namespace Shops {
                     return true;
                 }else if(foundComponent is Scheduler scheduler){
 
-                // }else if(foundComponent is Cooler cooler){
+                }else if(foundComponent is Cooler cooler){
 
                 }
             }
@@ -136,17 +145,15 @@ namespace Shops {
         }
 
         public bool TryGetBuyItemForComponent (CoreComponent component, out BuyItem item) {
+            item = default;
             if(component is Processor){
                 item = m_processorPurchases[component.levelIndex];
-                return true;
             }else if(component is Scheduler){
                 item = m_schedulerPurchases[component.levelIndex];
-                return true;
-            // }else if(component is Cooler){
-
+            }else if(component is Cooler){
+                item = m_coolerPurchases[component.levelIndex];
             }
-            item = default;
-            return false;
+            return (item != default);
         }
 
     }

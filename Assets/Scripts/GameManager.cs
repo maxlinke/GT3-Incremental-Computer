@@ -29,11 +29,6 @@ public class GameManager : MonoBehaviour {
         if(m_debugInitCurrency != 0){
             GameState.current.currency += m_debugInitCurrency;
         }
-        // TODO bring the auto save thing back
-        // full screen popup
-        // "Auto save found. Continue from last time? [y] yes | [n] no"
-        // input handler provides y and n key events
-        // and also doesn't output any other events while the popup is open
     }
 
     void Update () {
@@ -106,7 +101,10 @@ public class GameManagerEditor : Editor {
         temperatureImpulseStrength = EditorGUILayout.Slider("temperatureImpulseStrength", temperatureImpulseStrength, 0, 1);
         if(GUILayout.Button("do temperature")){
             if(GameState.current.TryFindCoreForIndex(temperatureTargetCore, out var core)){
-                core.AddTemperatureImpulse(temperatureTarget, temperatureImpulseStrength);
+                core.AddTemperatureImpulse(new Cores.Core.TemperatureImpulse(){
+                    targetTemperature = temperatureTarget, 
+                    impulseStrength = temperatureImpulseStrength
+                });
             }
         }
     }

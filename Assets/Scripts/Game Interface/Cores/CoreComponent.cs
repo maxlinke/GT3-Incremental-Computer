@@ -11,28 +11,11 @@ namespace Cores.Components {
 
         [field: System.NonSerialized] public Core core { get; private set; }
         
-        private bool m_initialized;
-
-        public void PostDeserializeInit (Core core) {
-            if(m_initialized){
-                Debug.LogError($"{this} is already initialized!");
-                return;
-            }
-            if(core == null){
-                Debug.LogError($"Null core when initializing {this}");
-                return;
-            }
+        public void SetCore (Core core) {
             this.core = core;
         }
 
-        protected CoreComponent (Core core, ID id, int slotIndex) {
-            this.core = core;
-            this.id = id;
-            this.slotIndex = slotIndex;
-            levelIndex = 0;
-            upgradeCount = 0;
-            m_initialized = true;
-        }
+        public CoreComponent () { }
 
         public abstract int slotSize { get ; }
 

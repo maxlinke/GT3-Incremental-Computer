@@ -14,7 +14,7 @@ namespace Shops.Items {
         protected override int slotSize => m_levelData.slotSize;
 
         protected override void OnPurchased (Core targetCore) {
-            targetCore.AddScheduler(Scheduler.Level.LevelIndex(levelData));
+            targetCore.AddScheduler(Scheduler.Level.levels.IndexOf(levelData));
         }
 
     }
