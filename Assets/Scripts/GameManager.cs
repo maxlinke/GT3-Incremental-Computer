@@ -7,7 +7,7 @@ using UnityEditor;
 public class GameManager : MonoBehaviour {
 
     const string CHEAT_COMMAND_ARG = "enable_cheats";
-    const string autoSaveFileName = "autoSave";
+    public const string AUTOSAVE_FILENAME = "autoSave";
 
     [SerializeField, RedIfEmpty] InputHandler m_inputHandler;
     [SerializeField, RedIfEmpty] GameInterface m_interface;
@@ -25,7 +25,18 @@ public class GameManager : MonoBehaviour {
             );
         }
         Commands.Command.moneyCheatEnabled = MoneyCheatShouldBeEnabled();
+        if(SaveData.SaveFileExists(AUTOSAVE_FILENAME)){
+            PopupDialogue.ShowYesNoDialogue("Load the latest auto-save?", LoadAutoSave, DontLoadAutoSave);
+        }
     }
+
+    void LoadAutoSave () {
+        if(!SaveData.TryLoadFromDisk(AUTOSAVE_FILENAME, out var errorMsg)){
+            Debug.LogError(errorMsg);
+        }
+    }
+
+    void DontLoadAutoSave () { }
 
     void InitGameComponents () {
         m_inputHandler.Initialize();

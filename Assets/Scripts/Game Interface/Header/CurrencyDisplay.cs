@@ -20,12 +20,12 @@ namespace GameInterfaceElements.Header {
             GameState.onGameStateChanged += OnGameStateChanged;
             GameState.onCurrencyChanged += OnCurrencyChanged;
             OnGameStateChanged(GameState.current);
-            OnCurrencyChanged(GameState.current.currency);
         }
 
         void OnGameStateChanged (GameState gameState) {
             m_pointsAtLastGainUpdate = GameState.current.currency;
             m_nextGainUpdate = Time.time;
+            OnCurrencyChanged(gameState.currency);
         }
 
         void OnCurrencyChanged (int newCurrency) {

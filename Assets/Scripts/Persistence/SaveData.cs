@@ -53,14 +53,17 @@ public class SaveData {
         }
     }
 
+    public static bool SaveFileExists (string fileName) {
+        return File.Exists(GetFilePath(fileName));
+    }
+
     public static bool TryLoadFromDisk (string fileName, out string errorMessage) {
         try{
-            var filePath = SaveData.GetFilePath(fileName);
-            if(!File.Exists(filePath)){
+            if(!SaveFileExists(fileName)){
                 errorMessage = $"There is no save file named \"{fileName}\"!";
                 return false;
             }
-            var json = File.ReadAllText(filePath);
+            var json = File.ReadAllText(GetFilePath(fileName));
             var saveData = JsonUtility.FromJson<SaveData>(json);
             if(!saveData.TryApply(out errorMessage)){
                 return false;

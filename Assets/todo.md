@@ -1,4 +1,5 @@
 move command
-
-savedata
-    do the auto-save on quit again (only via exit command), with the prompt on reopen and a little gain for the time spent closed (if running)
+couple more graphics for the component views
+maybe a few more upgrades
+and possible more tiers
+also core and task upgrades
