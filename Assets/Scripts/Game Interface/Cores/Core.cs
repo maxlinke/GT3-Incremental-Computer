@@ -9,11 +9,11 @@ namespace Cores {
     public class Core : ISerializationCallbackReceiver {
 
         public const int SLOT_COUNT = 6;
-        public const float DEFAULT_TEMPERATURE = 21;
-        private const float DEFAULT_TEMPERATURE_SPEED = 1;
+
+        private const float MAX_TEMPERATURE = 100;
+        private const float DEFAULT_COOLDOWN_IMPULSE_STRENGTH = 0.001f;
 
         public const bool START_ON_PROCESSOR_CYCLE = false;
-
         public const float TEMP_CYCLES_PER_SECOND = 2f;
 
         public static Core GetInitialCore (System.Func<ID> getNewId) {
@@ -65,16 +65,18 @@ namespace Cores {
         public Core () {
             unlocked = false;
             running = false;
-            temperature = DEFAULT_TEMPERATURE;
+            temperature = GameState.DEFAULT_TEMPERATURE;
             cycleTimer = 0;
             isOnProcessorCycle = START_ON_PROCESSOR_CYCLE;
             m_processors = new List<Processor>();
             m_schedulers = new List<Scheduler>();
         }
 
-        // TODO
         public float temperatureSpeedFactor { get {
-            return 1f;
+            if(temperature >= MAX_TEMPERATURE){
+                return 0f;
+            }
+            return Mathf.Sqrt(MAX_TEMPERATURE - temperature) / Mathf.Sqrt(MAX_TEMPERATURE - GameState.DEFAULT_TEMPERATURE);
         } }
 
         public float cycleDuration { get {
@@ -151,7 +153,11 @@ namespace Cores {
         }
 
         public void OnFixedUpdate () {
-            // TODO cooldown
+            AddTemperatureImpulse(GameState.DEFAULT_TEMPERATURE, DEFAULT_COOLDOWN_IMPULSE_STRENGTH);
+        }
+
+        public void AddTemperatureImpulse (float targetTemperature, float impulseStrength) {
+            temperature = Mathf.Lerp(temperature, targetTemperature, impulseStrength);
         }
 
         public void Unlock () {

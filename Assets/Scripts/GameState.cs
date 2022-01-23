@@ -8,8 +8,8 @@ using Tasks;
 public class GameState {
 
     public const string CURRENCY_SYMBOL = "CR";
-
     public const char UPGRADE_SYMBOL = '*';
+    public const float DEFAULT_TEMPERATURE = 21;
 
     public static string GetUpgradeIndicator (int upgrades) {
         return new string(UPGRADE_SYMBOL, upgrades);

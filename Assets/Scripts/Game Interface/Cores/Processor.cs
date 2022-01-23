@@ -22,7 +22,8 @@ namespace Cores.Components {
 
         public void Execute () {
             var taskQueue = TaskQueue.instance;
-            var totalSpace = Level.levels[levelIndex].subLevels[upgradeCount].maxTasksPerCycle;
+            var currentLevel = Level.levels[levelIndex];
+            var totalSpace = currentLevel.subLevels[upgradeCount].maxTasksPerCycle;
             var spaceRemaining = totalSpace; 
             for(int i=0; i<taskQueue.taskCount; i++){
                 if(taskQueue[i].count <= spaceRemaining){
@@ -33,6 +34,7 @@ namespace Cores.Components {
                 }
             }
             var usageLevel = 1f - ((float)spaceRemaining / totalSpace);
+            core.AddTemperatureImpulse(currentLevel.cycleTemperatureImpulseTarget, currentLevel.cycleTemperatureImpulseStrength * usageLevel);
             onExecute(usageLevel);
         }
 
@@ -42,8 +44,9 @@ namespace Cores.Components {
             public static IReadOnlyList<Level> levels { get; private set; }
 
             [field: SerializeField] public int slotSize { get; private set; }
-
-            [SerializeField, InlineProperty] private SubLevel [] m_subLevels;
+            [field: SerializeField] public float cycleTemperatureImpulseTarget { get; private set; }
+            [field: SerializeField] public float cycleTemperatureImpulseStrength { get; private set; }
+            [SerializeField, InlineProperty] private SubLevel[] m_subLevels;
 
             public IReadOnlyList<SubLevel> subLevels => m_subLevels;
 

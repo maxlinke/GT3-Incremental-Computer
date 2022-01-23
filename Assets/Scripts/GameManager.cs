@@ -57,34 +57,56 @@ public class GameManagerEditor : Editor {
     int taskLevel;
     int taskCount;
 
+    int temperatureTargetCore;
+    int temperatureTarget;
+    float temperatureImpulseStrength;
+
     public override void OnInspectorGUI () {
         base.OnInspectorGUI();
         if(EditorApplication.isPlaying){
             GUILayout.Space(10);
             EditorGUILayout.LabelField("Tasks n shiz", EditorStyles.boldLabel);
-            taskLevel = EditorGUILayout.IntSlider("level", taskLevel, 0, 2);
-            taskCount = EditorGUILayout.IntSlider("count", taskCount, 1, 1024);
-            if(GUILayout.Button("add task")){
-                TaskQueue.instance.TryAddTask(new Tasks.Task(
-                    level: taskLevel, 
-                    count: taskCount
-                ));
+            DrawTaskStuff();
+            GUILayout.Space(10);
+            EditorGUILayout.LabelField("Temperature", EditorStyles.boldLabel);
+            DrawTemperatureStuff();
+        }
+    }
+
+    void DrawTaskStuff () {
+        taskLevel = EditorGUILayout.IntSlider("level", taskLevel, 0, 2);
+        taskCount = EditorGUILayout.IntSlider("count", taskCount, 1, 1024);
+        if(GUILayout.Button("add task")){
+            TaskQueue.instance.TryAddTask(new Tasks.Task(
+                level: taskLevel, 
+                count: taskCount
+            ));
+        }
+        if(GUILayout.Button("take task")){
+            if(TaskQueue.instance.taskCount > 0){
+                TaskQueue.instance.TakeTask(0);
             }
-            if(GUILayout.Button("take task")){
-                if(TaskQueue.instance.taskCount > 0){
-                    TaskQueue.instance.TakeTask(0);
-                }
+        }
+        if(GUILayout.Button("add random")){
+            TaskQueue.instance.TryAddTask(new Tasks.Task(
+                level: UnityEngine.Random.Range(0, 3), 
+                count: UnityEngine.Random.Range(1, 1025)
+            ));
+        }
+        if(GUILayout.Button("take random")){
+            if(TaskQueue.instance.taskCount > 0){
+                TaskQueue.instance.TakeTask(UnityEngine.Random.Range(0, TaskQueue.instance.taskCount));
             }
-            if(GUILayout.Button("add random")){
-                TaskQueue.instance.TryAddTask(new Tasks.Task(
-                    level: UnityEngine.Random.Range(0, 3), 
-                    count: UnityEngine.Random.Range(1, 1025)
-                ));
-            }
-            if(GUILayout.Button("take random")){
-                if(TaskQueue.instance.taskCount > 0){
-                    TaskQueue.instance.TakeTask(UnityEngine.Random.Range(0, TaskQueue.instance.taskCount));
-                }
+        }
+    }
+
+    void DrawTemperatureStuff () {
+        temperatureTargetCore =      EditorGUILayout.IntField("temperatureTargetCore", temperatureTargetCore);
+        temperatureTarget =          EditorGUILayout.IntField("temperatureTarget", temperatureTarget);
+        temperatureImpulseStrength = EditorGUILayout.Slider("temperatureImpulseStrength", temperatureImpulseStrength, 0, 1);
+        if(GUILayout.Button("do temperature")){
+            if(GameState.current.TryFindCoreForIndex(temperatureTargetCore, out var core)){
+                core.AddTemperatureImpulse(temperatureTarget, temperatureImpulseStrength);
             }
         }
     }

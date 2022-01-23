@@ -19,6 +19,8 @@ MonoBehaviour:
     m_upgradeCost: 20
     m_actualLevel:
       <slotSize>k__BackingField: 1
+      <cycleTemperatureImpulseTarget>k__BackingField: 50
+      <cycleTemperatureImpulseStrength>k__BackingField: 0.01
       m_subLevels:
       - <maxTasksPerCycle>k__BackingField: 4
       - <maxTasksPerCycle>k__BackingField: 6
@@ -29,6 +31,8 @@ MonoBehaviour:
     m_upgradeCost: 50
     m_actualLevel:
       <slotSize>k__BackingField: 2
+      <cycleTemperatureImpulseTarget>k__BackingField: 80
+      <cycleTemperatureImpulseStrength>k__BackingField: 0.015
       m_subLevels:
       - <maxTasksPerCycle>k__BackingField: 40
       - <maxTasksPerCycle>k__BackingField: 50
@@ -39,6 +43,8 @@ MonoBehaviour:
     m_upgradeCost: 300
     m_actualLevel:
       <slotSize>k__BackingField: 3
+      <cycleTemperatureImpulseTarget>k__BackingField: 200
+      <cycleTemperatureImpulseStrength>k__BackingField: 0.02
       m_subLevels:
       - <maxTasksPerCycle>k__BackingField: 240
       - <maxTasksPerCycle>k__BackingField: 300
