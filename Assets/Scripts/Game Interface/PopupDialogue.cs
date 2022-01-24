@@ -1,16 +1,35 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
+using System.Collections.Generic;
 
 public class PopupDialogue : MonoBehaviour {
 
     const char yesKey = 'Y';
     const char noKey = 'N';
-    const KeyCode cancelKey = KeyCode.Escape;
+    const KeyCode cancelKey = InputHandler.CANCEL_KEY;
+    const KeyCode confirmKey = InputHandler.CONFIRM_KEY;
+    
+    enum OptionId {
+        Yes,
+        No,
+        Cancel,
+        Confirm
+    }
+
+    class Option {
+        public System.Action action;
+        public readonly Text text;
+        public Option (Text text) {
+            this.text = text;
+            this.action = null;
+        }
+    }
 
     private static PopupDialogue instance;
 
     public static bool IsVisible => instance.visible;
+    public static bool JustBecameVisible => Time.frameCount == instance.m_showFrame;
     public static bool WasJustVisible => Time.frameCount == instance.m_hideFrame;
     public static bool IsOrWasJustVisible => IsVisible || WasJustVisible;
 
@@ -20,8 +39,12 @@ public class PopupDialogue : MonoBehaviour {
     bool visible {
         get => gameObject.activeSelf;
         set { 
-            if(!value && visible){
-                m_hideFrame = Time.frameCount;
+            if(value != visible){
+                if(value){
+                    m_showFrame = Time.frameCount;
+                }else{
+                    m_hideFrame = Time.frameCount;
+                }
             }
             gameObject.SetActive(value);
         }
@@ -31,91 +54,137 @@ public class PopupDialogue : MonoBehaviour {
 
     float m_initWidth;
     int m_hideFrame;
-    System.Action m_onYes;
-    System.Action m_onNo;
-    System.Action m_onCancel;
-    Text[] m_optionTexts;
+    int m_showFrame;
+    IReadOnlyDictionary<OptionId, Option> m_options;
 
-    // TODO using null like this for the oncancel thingy is not ideal. refactor if i have time, but it does work...
+    void EmptyButNotNull () { }
+
+    string TextForOption (OptionId option) {
+        switch(option){
+            case OptionId.Yes:     return $"[{yesKey}] Yes";
+            case OptionId.No:      return $"[{noKey}] No";
+            case OptionId.Cancel:  return $"[{cancelKey.ToString().Substring(0, 3)}] Cancel";
+            case OptionId.Confirm: return $"[{confirmKey}] Confirm";
+            default: return "???";
+        }
+    }
+
+    private static bool NoisyAbortIfOpen () {
+        if(instance.visible){
+            Debug.LogWarning($"{nameof(PopupDialogue)} is still visible, aborting call!");
+            return true;
+        }
+        return false;
+    }
+
+    private void Show (string message) {
+        visible = true;
+        m_messageText.text = message;
+        SetTextsActiveDependingOnActionAndCount(out var textCount);
+        var newWidth = m_initWidth * ((float)(Mathf.Max(2, textCount)) / 2);
+        rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newWidth);
+        MakeActiveTextsFillWidth();
+
+        void SetTextsActiveDependingOnActionAndCount (out int output) {
+            output = 0;
+            foreach(var option in m_options.Values){
+                if(option.action == null){
+                    option.text.SetGOActive(false);
+                }else{
+                    option.text.SetGOActive(true);
+                    output++;
+                }
+            }
+        }
+
+        void MakeActiveTextsFillWidth () {
+            var i = 0;
+            foreach(var option in m_options.Values){
+                var optionText = option.text;
+                if(!optionText.gameObject.activeSelf){
+                    continue;
+                }
+                var l = (float)i / textCount;
+                var r = (float)(i+1) / textCount;
+                optionText.rectTransform.anchorMin = new Vector2(l, 0);
+                optionText.rectTransform.anchorMax = new Vector2(r, 0);
+                optionText.rectTransform.anchoredPosition = Vector2.zero;
+                optionText.rectTransform.sizeDelta = new Vector2(0, optionText.rectTransform.sizeDelta.y);
+                i++;
+            }
+        }
+    }
+
+    public static void ShowSimpleConfirmDialogue (string message, System.Action onConfirm) {
+        if(NoisyAbortIfOpen()) return;
+        instance.m_options[OptionId.Yes].action =     null;
+        instance.m_options[OptionId.No].action =      null;
+        instance.m_options[OptionId.Cancel].action =  null;
+        instance.m_options[OptionId.Confirm].action = onConfirm ?? instance.EmptyButNotNull;
+        instance.Show(message);
+    }
 
     public static void ShowYesNoDialogue (string message, System.Action onYes, System.Action onNo) {
-        ShowYesNoCancelDialogue(message, onYes, onNo, null);
+        if(NoisyAbortIfOpen()) return;
+        instance.m_options[OptionId.Yes].action =     onYes ?? instance.EmptyButNotNull;
+        instance.m_options[OptionId.No].action =      onNo ?? instance.EmptyButNotNull;
+        instance.m_options[OptionId.Cancel].action =  null;
+        instance.m_options[OptionId.Confirm].action = null;
+        instance.Show(message);
     }
 
     public static void ShowYesNoCancelDialogue (string message, System.Action onYes, System.Action onNo, System.Action onCancel) {
-        if(instance.visible){
-            if(instance.m_onCancel != null){
-                instance.m_onCancel();
-            }else if(instance.m_onNo != null){
-                instance.m_onNo();
-            }
-        }
-        instance._ShowYesNoCancelDialogue(message, onYes, onNo, onCancel);
-    }
-
-    private void _ShowYesNoCancelDialogue (string message, System.Action onYes, System.Action onNo, System.Action onCancel) {
-        visible = true;
-        m_messageText.text = message;
-        m_onYes = onYes;
-        m_onNo = onNo;
-        m_onCancel = onCancel;
-        var textCount = (onCancel == null ? 2 : 3);
-        rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, m_initWidth * ((float)textCount / 2));
-        for(int i=0; i<textCount; i++){
-            var optionText = m_optionTexts[i];
-            optionText.SetGOActive(true);
-            var l = (float)i / textCount;
-            var r = (float)(i+1) / textCount;
-            optionText.rectTransform.anchorMin = new Vector2(l, 0);
-            optionText.rectTransform.anchorMax = new Vector2(r, 0);
-            optionText.rectTransform.anchoredPosition = Vector2.zero;
-            optionText.rectTransform.sizeDelta = new Vector2(0, optionText.rectTransform.sizeDelta.y);
-        }
-        for(int i=textCount; i<m_optionTexts.Length; i++){
-            m_optionTexts[i].SetGOActive(false);
-        }
+        if(NoisyAbortIfOpen()) return;
+        instance.m_options[OptionId.Yes].action =     onYes ?? instance.EmptyButNotNull;
+        instance.m_options[OptionId.No].action =      onNo ?? instance.EmptyButNotNull;
+        instance.m_options[OptionId.Cancel].action =  onCancel ?? instance.EmptyButNotNull;
+        instance.m_options[OptionId.Confirm].action = null;
+        instance.Show(message);
     }
 
     public void Initialize () {
         instance = this;
         m_initWidth = rectTransform.rect.width;
-        m_optionTexts = new Text[]{
-            Instantiate(m_optionTextTemplate, m_optionTextTemplate.transform.parent),
-            Instantiate(m_optionTextTemplate, m_optionTextTemplate.transform.parent),
-            Instantiate(m_optionTextTemplate, m_optionTextTemplate.transform.parent)
-        };
-        m_optionTexts[0].text = $"[{yesKey}] Yes";
-        m_optionTexts[1].text = $"[{noKey}] No";
-        m_optionTexts[2].text = $"[{InputHandler.CANCEL_COMMAND}] Cancel";
+        var options = new Dictionary<OptionId, Option>();
+        foreach(OptionId option in System.Enum.GetValues(typeof(OptionId))){
+            options[option] = new Option(Instantiate(m_optionTextTemplate, m_optionTextTemplate.transform.parent));
+            options[option].text.text = TextForOption(option);
+        }
+        m_options = options;
         m_optionTextTemplate.SetGOActive(false);
         InputHandler.onCharEntered
             .Where(_ => visible)
+            .Where(_ => !JustBecameVisible)
             .Subscribe(OnCharacterEntered);
         InputHandler.onCancel
             .Where(_ => visible)
-            .Where(_ => m_onCancel != null)
-            .Subscribe(_ => OnCancel());
+            .Where(_ => !JustBecameVisible)
+            .Where(_ => m_options[OptionId.Cancel].action != null)
+            .Subscribe(_ => InvokeAndClose(OptionId.Cancel));
+        InputHandler.onConfirm
+            .Where(_ => visible)
+            .Where(_ => !JustBecameVisible)
+            .Where(_ => m_options[OptionId.Confirm].action != null)
+            .Subscribe(_ => InvokeAndClose(OptionId.Confirm));
+        visible = false;
+    }
+
+    void InvokeAndClose (OptionId option) {
+        m_options[option].action?.Invoke();
         visible = false;
     }
 
     void OnCharacterEntered (char ch) {
         switch(char.ToUpper(ch)){
             case yesKey:
-                m_onYes?.Invoke();
-                visible = false;
+                InvokeAndClose(OptionId.Yes);
                 break;
             case noKey:
-                m_onNo?.Invoke();
-                visible = false;
+                InvokeAndClose(OptionId.No);
                 break;
             default:
                 break;
         }
-    }
-
-    void OnCancel () {
-        m_onCancel?.Invoke();
-        visible = false;
     }
 
 }

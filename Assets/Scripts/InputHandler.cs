@@ -5,6 +5,9 @@ public class InputHandler : MonoBehaviour {
 
     public const string CANCEL_COMMAND = "Ctrl+C";
     public const string SCROLL_COMMAND = "Ctrl+ArrowKey";
+    public const KeyCode CANCEL_KEY = KeyCode.Escape;
+    public const KeyCode CONFIRM_KEY = KeyCode.Return;
+    public const KeyCode CONFIRM_ALT_KEY = KeyCode.KeypadEnter;
 
     private readonly Subject<Event> m_onKeyEvent = new Subject<Event>();
 
@@ -13,6 +16,7 @@ public class InputHandler : MonoBehaviour {
     public static Subject<Vector2> onScrollCommand { get; private set; } = new Subject<Vector2>();
     public static Subject<Vector2> onDirection { get; private set; } = new Subject<Vector2>();
     public static Subject<Event> onCancel { get; private set; } = new Subject<Event>();
+    public static Subject<Event> onConfirm { get; private set; } = new Subject<Event>();
 
     public void Initialize () {
         InitObservables();
@@ -31,6 +35,18 @@ public class InputHandler : MonoBehaviour {
             .Where(evt => evt.keyCode == KeyCode.C)
             .Subscribe(evt => {
                 onCancel.OnNext(evt);
+                evt.Use();
+            });
+        m_onKeyEvent
+            .Where(evt => evt.keyCode == CANCEL_KEY)
+            .Subscribe(evt => {
+                onCancel.OnNext(evt);
+                evt.Use();
+            });
+        m_onKeyEvent
+            .Where(evt => evt.keyCode == CONFIRM_KEY || evt.keyCode == CONFIRM_ALT_KEY)
+            .Subscribe(evt => {
+                onConfirm.OnNext(evt);
                 evt.Use();
             });
         m_onKeyEvent
@@ -67,10 +83,8 @@ public class InputHandler : MonoBehaviour {
 
     bool IsTextEditCommand (KeyCode keyCode) {
         switch(keyCode){
-            case KeyCode.Return:
             case KeyCode.Backspace:
             case KeyCode.Delete:
-            case KeyCode.KeypadEnter:
                 return true;
             default:
                 return false;

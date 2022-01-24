@@ -55,10 +55,9 @@ public class InputConsole : MonoBehaviour, IScrollHandler {
             .Where(keyCode => (m_inputBuffer.Length > 0))
             .Where(keyCode => (keyCode == KeyCode.Backspace))
             .Subscribe(RemoveChar);
-        InputHandler.onTextEditCommand
+        InputHandler.onConfirm
             .Where(_ => !PopupDialogue.IsOrWasJustVisible)
-            .Where(keyCode => ((keyCode == KeyCode.Return) || (keyCode == KeyCode.KeypadEnter)))
-            .Subscribe(keyCode => SubmitLine());
+            .Subscribe(_ => SubmitLine());
         InputHandler.onDirection
             .Where(_ => !PopupDialogue.IsOrWasJustVisible)
             .Where(dir => (dir.y != 0 && dir.x == 0))

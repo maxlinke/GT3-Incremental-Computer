@@ -19,6 +19,20 @@ namespace Cores {
         public struct TemperatureImpulse {
             public float targetTemperature;
             public float impulseStrength;
+
+            public TemperatureImpulse WithTargetTemperature (float inputTargetTemperature) {
+                return new TemperatureImpulse(){
+                    targetTemperature = inputTargetTemperature,
+                    impulseStrength = this.impulseStrength
+                };
+            }
+
+            public TemperatureImpulse WithImpulseStrength (float inputImpulseStrength) {
+                return new TemperatureImpulse(){
+                    targetTemperature = this.targetTemperature,
+                    impulseStrength = inputImpulseStrength
+                };
+            }
         }
 
         private static readonly TemperatureImpulse defaultCoolImpulse = new TemperatureImpulse(){
