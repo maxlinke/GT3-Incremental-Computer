@@ -30,12 +30,12 @@ MonoBehaviour:
       - <maxTasksPerCycle>k__BackingField: 8
       - <maxTasksPerCycle>k__BackingField: 10
       - <maxTasksPerCycle>k__BackingField: 12
-  - m_price: 3200
-    m_upgradeCost: 1200
+  - m_price: 2400
+    m_upgradeCost: 1600
     m_actualLevel:
       <slotSize>k__BackingField: 2
-      <temperatureDelta>k__BackingField: 50
-      <heatImpulseStrength>k__BackingField: 0.025
+      <temperatureDelta>k__BackingField: 63
+      <heatImpulseStrength>k__BackingField: 0.05
       <gaugeSetup>k__BackingField:
         <usageGaugeWidthMultiplier>k__BackingField: 1.1
         <usageGaugeColumnCount>k__BackingField: 2
@@ -60,28 +60,85 @@ MonoBehaviour:
       - <maxTasksPerCycle>k__BackingField: 360
       - <maxTasksPerCycle>k__BackingField: 420
       - <maxTasksPerCycle>k__BackingField: 480
+  - m_price: 940000
+    m_upgradeCost: 500000
+    m_actualLevel:
+      <slotSize>k__BackingField: 3
+      <temperatureDelta>k__BackingField: 150
+      <heatImpulseStrength>k__BackingField: 0.1
+      <gaugeSetup>k__BackingField:
+        <usageGaugeWidthMultiplier>k__BackingField: 1.25
+        <usageGaugeColumnCount>k__BackingField: 6
+      m_subLevels:
+      - <maxTasksPerCycle>k__BackingField: 1000
+      - <maxTasksPerCycle>k__BackingField: 1500
+      - <maxTasksPerCycle>k__BackingField: 1800
+      - <maxTasksPerCycle>k__BackingField: 1900
+      - <maxTasksPerCycle>k__BackingField: 2000
+  - m_price: 24000000
+    m_upgradeCost: 20000000
+    m_actualLevel:
+      <slotSize>k__BackingField: 2
+      <temperatureDelta>k__BackingField: 250
+      <heatImpulseStrength>k__BackingField: 0.1
+      <gaugeSetup>k__BackingField:
+        <usageGaugeWidthMultiplier>k__BackingField: 2
+        <usageGaugeColumnCount>k__BackingField: 8
+      m_subLevels:
+      - <maxTasksPerCycle>k__BackingField: 5000
+      - <maxTasksPerCycle>k__BackingField: 8000
+      - <maxTasksPerCycle>k__BackingField: 11000
+      - <maxTasksPerCycle>k__BackingField: 13000
+      - <maxTasksPerCycle>k__BackingField: 15000
   m_schedulerPurchases:
   - m_price: 10
+    m_upgradeCost: 20
     m_levelData:
       <slotSize>k__BackingField: 1
-      <taskStackSize>k__BackingField: 1
       <viewInitData>k__BackingField:
         blipImageRows: 1
         blipImageCols: 1
-  - m_price: 50
+      m_subLevels:
+      - <taskStackSize>k__BackingField: 1
+      - <taskStackSize>k__BackingField: 2
+      - <taskStackSize>k__BackingField: 3
+      - <taskStackSize>k__BackingField: 4
+  - m_price: 400
+    m_upgradeCost: 1000
     m_levelData:
       <slotSize>k__BackingField: 1
-      <taskStackSize>k__BackingField: 4
       <viewInitData>k__BackingField:
         blipImageRows: 4
         blipImageCols: 1
-  - m_price: 200
+      m_subLevels:
+      - <taskStackSize>k__BackingField: 40
+      - <taskStackSize>k__BackingField: 80
+      - <taskStackSize>k__BackingField: 120
+      - <taskStackSize>k__BackingField: 160
+  - m_price: 80000
+    m_upgradeCost: 200000
     m_levelData:
       <slotSize>k__BackingField: 1
-      <taskStackSize>k__BackingField: 20
       <viewInitData>k__BackingField:
         blipImageRows: 4
         blipImageCols: 5
+      m_subLevels:
+      - <taskStackSize>k__BackingField: 400
+      - <taskStackSize>k__BackingField: 1000
+      - <taskStackSize>k__BackingField: 2000
+      - <taskStackSize>k__BackingField: 5000
+  - m_price: 30000000
+    m_upgradeCost: 50000000
+    m_levelData:
+      <slotSize>k__BackingField: 2
+      <viewInitData>k__BackingField:
+        blipImageRows: 10
+        blipImageCols: 5
+      m_subLevels:
+      - <taskStackSize>k__BackingField: 80000
+      - <taskStackSize>k__BackingField: 11000
+      - <taskStackSize>k__BackingField: 13000
+      - <taskStackSize>k__BackingField: 15000
   m_coolerPurchases:
   - m_price: 2000
     m_info: Air-Cooling

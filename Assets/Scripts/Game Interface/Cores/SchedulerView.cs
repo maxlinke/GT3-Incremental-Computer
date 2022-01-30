@@ -28,8 +28,9 @@ namespace Cores.Components {
             base.Initialize(scheduler);
             this.scheduler = scheduler;
             scheduler.onExecute += OnExecute;
+            scheduler.onUpgrade += OnUpgraded;
             InitImages();
-            m_text.text = $"SCH {scheduler.id}";
+            OnUpgraded(scheduler.upgradeCount);
         }
 
         void InitImages () {
@@ -49,7 +50,6 @@ namespace Cores.Components {
                 newImage.rectTransform.SetAnchoredY(0);
                 newImage.rectTransform.SetWidth(newWidth);
                 newImage.rectTransform.anchoredPosition += ix * offset;
-                newImage.SetGOActive(true);
             }
         }
 
@@ -57,6 +57,10 @@ namespace Cores.Components {
             m_executing = true;
             m_updateImage = true;
             m_newImageState = scheduler.actuallyAddedTasks;
+        }
+
+        void OnUpgraded (int upgradeLevel) {
+            m_text.text = $"SCH {scheduler.id} {GameState.GetUpgradeIndicator(upgradeLevel)}";
         }
 
         void LateUpdate () {

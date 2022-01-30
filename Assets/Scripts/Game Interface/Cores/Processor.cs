@@ -6,7 +6,7 @@ namespace Cores.Components {
     [System.Serializable]
     public class Processor : CoreComponent, IUpgradeable<Processor.Level.SubLevel> {
 
-        public override int slotSize => Level.levels[levelIndex].slotSize;
+        public override int slotSize => level.slotSize;
 
         public Level level => Level.levels[levelIndex];
 

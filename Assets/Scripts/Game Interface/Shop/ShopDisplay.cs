@@ -171,7 +171,11 @@ public class ShopDisplay : MonoBehaviour {
         if(instance.m_shop.TryGetUpgradeItemForId(id, out var item)){
             return item.TryPurchase(id, out message);
         }
-        message = $"\"{id}\" is neither a valid item name or component id!";
+        if(GameState.current.TryFindComponentForId(id, out var component)){
+            message = $"{component.GetType().Name} isn't upgradeable!";
+        }else{
+            message = $"\"{id}\" is neither a valid item name or component id!";
+        }
         return false;
     }
 

@@ -47,13 +47,15 @@ namespace Shops {
         public int eachNewUnlockableCoreCostFactor => m_eachNewUnlockableCoreCostFactor;
 
         private IReadOnlyList<ComponentUpgrade<Processor>> processorUpgrades;
+        private IReadOnlyList<ComponentUpgrade<Scheduler>> schedulerUpgrades;
 
         public IEnumerable<Category> categories { get {
-            yield return new Category(CMD_BUY, CAT_CORE_UNLOCKS, CoreUnlock.allUnlocks);
             yield return new Category(CMD_BUY, CAT_PROCESSORS, m_processorPurchases);
             yield return new Category(CMD_BUY, CAT_SCHEDULERS, m_schedulerPurchases);
             yield return new Category(CMD_BUY, CAT_COOLERS, m_coolerPurchases);
+            yield return new Category(CMD_BUY, CAT_CORE_UNLOCKS, CoreUnlock.allUnlocks);
             yield return new Category(CMD_UPGRADE, CAT_PROCESSORS, processorUpgrades);
+            yield return new Category(CMD_UPGRADE, CAT_SCHEDULERS, schedulerUpgrades);
         } }
 
         public void EnsureInitialized () {
@@ -66,6 +68,7 @@ namespace Shops {
             Cooler.Level.EnsureLevelsInitialized(m_coolerPurchases.Select(cp => cp.levelData));
             SetNames(m_coolerPurchases, CMD_CAT_COOLER);
             processorUpgrades = GetUpgradeItems(m_processorPurchases);
+            schedulerUpgrades = GetUpgradeItems(m_schedulerPurchases);
 
             void SetNames (IReadOnlyList<BuyItem> items, string prefix) {
                 for(int i=0; i<items.Count; i++){
@@ -121,7 +124,8 @@ namespace Shops {
                     item = processorUpgrades[processor.levelIndex];
                     return true;
                 }else if(foundComponent is Scheduler scheduler){
-
+                    item = schedulerUpgrades[scheduler.levelIndex];
+                    return true;
                 }else if(foundComponent is Cooler cooler){
 
                 }
