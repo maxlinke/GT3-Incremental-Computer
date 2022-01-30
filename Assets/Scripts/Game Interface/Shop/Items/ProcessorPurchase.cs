@@ -19,7 +19,7 @@ namespace Shops.Items {
         IReadOnlyList<Processor.Level.SubLevel> IUpgradeSource<Processor, Processor.Level.SubLevel>.upgrades => levelData.subLevels;
 
         protected override void OnPurchased (Core targetCore) {
-            targetCore.AddProcessor(Processor.Level.levels.IndexOf(levelData));
+            targetCore.AddNewProcessor(Processor.Level.levels.IndexOf(levelData));
         }
 
     }

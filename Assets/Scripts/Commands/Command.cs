@@ -22,7 +22,7 @@ namespace Commands {
             new BuyCommand(){id = buyCommandId},
             new SellCommand(){id = "sell"},
             new UpgradeCommand(){id = "upgrade"},
-            // move
+            new MoveCommand(){id = "move"},
             new SaveCommand(){id = "save"},
             new LoadCommand(){id = "load"},
             new ExitCommand(){id = "exit"},

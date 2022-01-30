@@ -59,7 +59,7 @@ public class PopupDialogue : MonoBehaviour {
 
     void EmptyButNotNull () { }
 
-    string TextForOption (OptionId option) {
+    private static string TextForOption (OptionId option) {
         switch(option){
             case OptionId.Yes:     return $"[{yesKey}] Yes";
             case OptionId.No:      return $"[{noKey}] No";

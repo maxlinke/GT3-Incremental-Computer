@@ -77,11 +77,11 @@ public class InputHandler : MonoBehaviour {
             });
     }
 
-    bool IsTextCharacter (char character) {
+    static bool IsTextCharacter (char character) {
         return character >= 32 && character <= 127;
     }
 
-    bool IsTextEditCommand (KeyCode keyCode) {
+    static bool IsTextEditCommand (KeyCode keyCode) {
         switch(keyCode){
             case KeyCode.Backspace:
             case KeyCode.Delete:
@@ -91,7 +91,7 @@ public class InputHandler : MonoBehaviour {
         }
     }
 
-    bool IsDirectionKey (KeyCode keyCode) {
+    static bool IsDirectionKey (KeyCode keyCode) {
         switch(keyCode){
             case KeyCode.UpArrow:
             case KeyCode.DownArrow:
@@ -103,11 +103,11 @@ public class InputHandler : MonoBehaviour {
         }
     }
 
-    bool HasModifier (Event evt, EventModifiers modifier) {
+    static bool HasModifier (Event evt, EventModifiers modifier) {
         return ((evt.modifiers & modifier) == modifier);
     }
 
-    Vector2 DirectionForKeyCode (KeyCode keyCode) {
+    static Vector2 DirectionForKeyCode (KeyCode keyCode) {
         switch(keyCode){
             case KeyCode.UpArrow:
                 return Vector2.up;

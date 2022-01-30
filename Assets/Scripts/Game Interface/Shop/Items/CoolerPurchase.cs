@@ -15,7 +15,7 @@ namespace Shops.Items {
         protected override int slotSize => m_levelData.slotSize;
 
         protected override void OnPurchased(Core targetCore) {
-            targetCore.AddCooler(Cooler.Level.levels.IndexOf(levelData));
+            targetCore.AddNewCooler(Cooler.Level.levels.IndexOf(levelData));
         }
 
     }

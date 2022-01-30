@@ -26,7 +26,7 @@ namespace Cores.Components {
         void OnExecute () {
             m_executing = true;
             m_updateImage = true;
-            m_newImageState = true;
+            m_newImageState = scheduler.actuallyAddedTasks;
         }
 
         void LateUpdate () {

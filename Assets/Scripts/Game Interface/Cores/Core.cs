@@ -43,8 +43,8 @@ namespace Cores {
         public static Core GetInitialCore (System.Func<ID> getNewId) {
             var output = new Core();
             output.unlocked = true;
-            output.AddComponent<Processor>(getNewId(), 0, output.m_processors);
-            output.AddComponent<Scheduler>(getNewId(), 0, output.m_schedulers);
+            output.AddNewComponent<Processor>(getNewId(), 0);
+            output.AddNewComponent<Scheduler>(getNewId(), 0);
             return output;
         }
 
@@ -199,39 +199,47 @@ namespace Cores {
             }
         }
 
-        public void AddProcessor (int level) {
-            AddComponent<Processor>(ID.GetNext(), level, m_processors);
+        public void AddNewProcessor (int level) {
+            AddNewComponent<Processor>(ID.GetNext(), level);
         }
 
-        public void AddScheduler (int level) {
-            AddComponent<Scheduler>(ID.GetNext(), level, m_schedulers);
+        public void AddNewScheduler (int level) {
+            AddNewComponent<Scheduler>(ID.GetNext(), level);
         }
 
-        public void AddCooler (int level) {
-            AddComponent<Cooler>(ID.GetNext(), level, m_coolers);
+        public void AddNewCooler (int level) {
+            AddNewComponent<Cooler>(ID.GetNext(), level);
         }
 
-        void AddComponent<T> (ID id, int level, IList<T> targetList) where T : CoreComponent, new() {
+        void AddNewComponent<T> (ID id, int level) where T : CoreComponent, new() {
             var newT = new T();
-            newT.SetCore(this);
             newT.id = id;
-            newT.slotIndex = nextFreeSlotIndex;
             newT.levelIndex = level;
             newT.upgradeCount = 0;
-            targetList.Add(newT);
+            AddComponent(newT);
+        }
+
+        public void AddComponent (CoreComponent newComponent) {
+            newComponent.SetCore(this);
+            newComponent.slotIndex = nextFreeSlotIndex;
+            if(newComponent is Processor proc){
+                m_processors.Add(proc);
+            }else if(newComponent is Scheduler sched){
+                m_schedulers.Add(sched);
+            }else if(newComponent is Cooler cool){
+                m_coolers.Add(cool);
+            }
             onLayoutChanged();
         }
 
         public void RemoveComponent (CoreComponent removeComponent) {
-            bool removed;
-            if(removeComponent is Processor processor){
-                removed = m_processors.Remove(processor);
-            }else if(removeComponent is Scheduler scheduler){
-                removed = m_schedulers.Remove(scheduler);
-            }else if(removeComponent is Cooler cooler){
-                removed = m_coolers.Remove(cooler);
-            }else{
-                removed = false;
+            bool removed = false;
+            if(removeComponent is Processor proc){
+                removed = m_processors.Remove(proc);
+            }else if(removeComponent is Scheduler sched){
+                removed = m_schedulers.Remove(sched);
+            }else if(removeComponent is Cooler cool){
+                removed = m_coolers.Remove(cool);
             }
             if(removed){
                 foreach(var component in components){
