@@ -35,7 +35,7 @@ namespace Cores.Components {
 
         void InitGauges () {
             m_usageGaugeTemplate.SetGOActive(false);
-            var setup = Processor.Level.levels[processor.levelIndex].gaugeSetup;
+            var setup = processor.level.gaugeSetup;
             var rowCount = processor.slotSize;
             var gaugeWidth = Mathf.RoundToInt(m_usageGaugeTemplate.rectTransform.rect.width * setup.usageGaugeWidthMultiplier);
             var gaugeHeight = Mathf.RoundToInt(m_usageGaugeTemplate.rectTransformParent.rect.height / rowCount);

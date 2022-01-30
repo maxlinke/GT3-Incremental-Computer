@@ -47,9 +47,9 @@ namespace Cores {
             // output.AddNewComponent<Processor>(getNewId(), 1);
             // output.AddNewComponent<Processor>(getNewId(), 2);
             // output.AddNewComponent<Scheduler>(getNewId(), 0);
-            output.AddNewComponent<Cooler>(getNewId(), 0);
-            output.AddNewComponent<Cooler>(getNewId(), 1);
-            output.AddNewComponent<Cooler>(getNewId(), 2);
+            output.AddNewComponent<Scheduler>(getNewId(), 0);
+            output.AddNewComponent<Scheduler>(getNewId(), 1);
+            output.AddNewComponent<Scheduler>(getNewId(), 2);
             return output;
         }
 

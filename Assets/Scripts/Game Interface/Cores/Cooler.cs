@@ -8,6 +8,8 @@ namespace Cores.Components {
 
         public override int slotSize => Level.levels[levelIndex].slotSize;
 
+        public Level level => Level.levels[levelIndex];
+
         public Core.TemperatureImpulse GetCoolImpulse () {
             var currentLevel = Level.levels[levelIndex];
             return new Core.TemperatureImpulse(){
@@ -24,9 +26,7 @@ namespace Cores.Components {
             [field: SerializeField] public int slotSize { get; private set; }
             [field: SerializeField] public float temperatureDelta { get; private set; }
             [field: SerializeField] public float coolImpulseStrength { get; private set; }
-            [field: SerializeField] public int spriteColumnCount { get; private set; }
-            [field: SerializeField] public bool useFanSprites { get; private set; }
-            [field: SerializeField] public bool useIceSprites { get; private set; }
+            [field: SerializeField, InlineProperty] public CoolerView.ViewInitData viewInit { get; private set; }
 
             public static void EnsureLevelsInitialized (IEnumerable<Level> inputLevels) {
                 levels = levels ?? new List<Level>(inputLevels);

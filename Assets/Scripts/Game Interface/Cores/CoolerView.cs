@@ -6,6 +6,13 @@ namespace Cores.Components {
 
     public class CoolerView : CoreComponentView<Cooler> {
 
+        [System.Serializable]
+        public class ViewInitData {
+            [field: SerializeField] public int spriteColumnCount { get; private set; }
+            [field: SerializeField] public bool useFanSprites { get; private set; }
+            [field: SerializeField] public bool useIceSprites { get; private set; }
+        }
+
         class ImageData {
             public IReadOnlyList<Sprite> sprites;
             public float timerOffset;
@@ -33,11 +40,11 @@ namespace Cores.Components {
         void InitImages () {
             m_images = new Dictionary<Image, ImageData>();
             m_imageTemplate.SetGOActive(false);
-            var level = Cooler.Level.levels[cooler.levelIndex];
+            var level = cooler.level;
             var imageParentRT = m_imageTemplate.transform.parent as RectTransform;
             var offset = (-1) * new Vector2(m_imageTemplate.rectTransform.rect.width + m_horizontalImageSpacing, imageParentRT.rect.height / level.slotSize);
             for(int i=0; i<level.slotSize; i++){
-                for(int j=0; j<level.spriteColumnCount; j++){
+                for(int j=0; j<level.viewInit.spriteColumnCount; j++){
                     var newImage = Instantiate(m_imageTemplate, imageParentRT);
                     newImage.SetGOActive(true);
                     newImage.rectTransform.anchoredPosition += offset * new Vector2(j, i);
@@ -51,11 +58,13 @@ namespace Cores.Components {
         }
 
         IReadOnlyList<Sprite> GetSprites (Cooler.Level level, int i, int j) {
-            if(level.useFanSprites && level.useIceSprites){
+            var useFan = level.viewInit.useFanSprites;
+            var useIce = level.viewInit.useIceSprites;
+            if(useFan && useIce){
                 return (((i + j) % 2) == 0) ? m_sprites.fanSprites : m_sprites.iceSprites;
-            }else if(level.useFanSprites){
+            }else if(useFan){
                 return m_sprites.fanSprites;
-            }else if(level.useIceSprites){
+            }else if(useIce){
                 return m_sprites.iceSprites;
             }
             Debug.LogWarning($"No sprites set for cooler level {cooler.levelIndex}!");

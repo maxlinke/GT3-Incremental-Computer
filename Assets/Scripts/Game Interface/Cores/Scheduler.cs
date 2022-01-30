@@ -8,6 +8,8 @@ namespace Cores.Components {
 
         public override int slotSize => 1;
 
+        public Level level => Level.levels[levelIndex];
+
         public event System.Action onExecute = delegate {};
 
         [field: System.NonSerialized] public bool actuallyAddedTasks { get; private set; } = false;
@@ -29,6 +31,7 @@ namespace Cores.Components {
 
             [field: SerializeField] public int slotSize { get; private set; }
             [field: SerializeField] public int taskStackSize { get; private set; }
+            [field: SerializeField, InlineProperty] public SchedulerView.ViewInitData viewInitData { get; private set; }
 
             public static void EnsureLevelsInitialized (IEnumerable<Level> inputLevels) {
                 levels = levels ?? new List<Level>(inputLevels);

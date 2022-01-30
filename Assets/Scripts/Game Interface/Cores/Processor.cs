@@ -8,6 +8,8 @@ namespace Cores.Components {
 
         public override int slotSize => Level.levels[levelIndex].slotSize;
 
+        public Level level => Level.levels[levelIndex];
+
         public event System.Action<float> onExecute = delegate {};
         public event System.Action<int> onUpgraded = delegate {};
         
