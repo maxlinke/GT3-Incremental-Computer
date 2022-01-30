@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,30 +6,70 @@ namespace Cores.Components {
 
     public class CoolerView : CoreComponentView<Cooler> {
 
-        [SerializeField, RedIfEmpty] Image m_spinnerImage;
-        [SerializeField] Sprite[] m_spinnerSprites;
+        class ImageData {
+            public IReadOnlyList<Sprite> sprites;
+            public float timerOffset;
+            public int shownSpriteIndex;
+        }
+
+        [SerializeField, RedIfEmpty] Image m_imageTemplate;
+        [SerializeField, RedIfEmpty] CoolerSprites m_sprites;
         [SerializeField] float m_cycleDuration;
+        [SerializeField] float m_horizontalImageSpacing;
 
         public Cooler cooler { get; private set; }
 
         public override CoreComponent component => cooler;
 
-        float m_timerOffset;
-        int m_shownSpriteIndex;
+        Dictionary<Image, ImageData> m_images;
 
         public override void Initialize (Cooler cooler) {
             base.Initialize(cooler);
             this.cooler = cooler;
             m_text.text = $"CLR {this.cooler.id}";
-            m_timerOffset = Random.value;
-            m_shownSpriteIndex = -1;
+            InitImages();
+        }
+
+        void InitImages () {
+            m_images = new Dictionary<Image, ImageData>();
+            m_imageTemplate.SetGOActive(false);
+            var level = Cooler.Level.levels[cooler.levelIndex];
+            var imageParentRT = m_imageTemplate.transform.parent as RectTransform;
+            var offset = (-1) * new Vector2(m_imageTemplate.rectTransform.rect.width + m_horizontalImageSpacing, imageParentRT.rect.height / level.slotSize);
+            for(int i=0; i<level.slotSize; i++){
+                for(int j=0; j<level.spriteColumnCount; j++){
+                    var newImage = Instantiate(m_imageTemplate, imageParentRT);
+                    newImage.SetGOActive(true);
+                    newImage.rectTransform.anchoredPosition += offset * new Vector2(j, i);
+                    m_images[newImage] = new ImageData(){
+                        sprites = GetSprites(level, i, j),
+                        timerOffset = Random.value,
+                        shownSpriteIndex = -1
+                    };
+                }
+            }
+        }
+
+        IReadOnlyList<Sprite> GetSprites (Cooler.Level level, int i, int j) {
+            if(level.useFanSprites && level.useIceSprites){
+                return (((i + j) % 2) == 0) ? m_sprites.fanSprites : m_sprites.iceSprites;
+            }else if(level.useFanSprites){
+                return m_sprites.fanSprites;
+            }else if(level.useIceSprites){
+                return m_sprites.iceSprites;
+            }
+            Debug.LogWarning($"No sprites set for cooler level {cooler.levelIndex}!");
+            return m_sprites.fanSprites;
         }
 
         void Update () {
-            var i = (int)(((Time.time / m_cycleDuration) + m_timerOffset) * m_spinnerSprites.Length) % m_spinnerSprites.Length;
-            if(i != m_shownSpriteIndex){
-                m_spinnerImage.sprite = m_spinnerSprites[i];
-                m_shownSpriteIndex = i;
+            foreach(var image in m_images.Keys){
+                var data = m_images[image];
+                var i = (int)(((Time.time / m_cycleDuration) + data.timerOffset) * data.sprites.Count) % data.sprites.Count;
+                if(i != data.shownSpriteIndex){
+                    image.sprite = data.sprites[i];
+                    data.shownSpriteIndex = i;
+                }
             }
         }
 

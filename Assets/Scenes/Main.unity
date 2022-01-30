@@ -731,11 +731,11 @@ RectTransform:
   m_Father: {fileID: 1275869070}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 5.25, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 5.25, y: -3.5}
   m_SizeDelta: {x: 50, y: 15}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &281519045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1666,7 +1666,7 @@ GameObject:
   - component: {fileID: 594828284}
   - component: {fileID: 594828283}
   m_Layer: 5
-  m_Name: Spinner Image
+  m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1683,14 +1683,14 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1275869070}
-  m_RootOrder: 1
+  m_Father: {fileID: 1117583013}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -11, y: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -1.5, y: -1.5}
   m_SizeDelta: {x: 13, y: 13}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &594828283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2762,6 +2762,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_image: {fileID: 1111784473}
   m_text: {fileID: 1137934764}
+--- !u!1 &1117583012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1117583013}
+  m_Layer: 5
+  m_Name: Image Parent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1117583013
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1117583012}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 594828282}
+  m_Father: {fileID: 1275869070}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -6, y: -6}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1122160109
 GameObject:
   m_ObjectHideFlags: 0
@@ -3143,7 +3179,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 281519044}
-  - {fileID: 594828282}
+  - {fileID: 1117583013}
   m_Father: {fileID: 321350532}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3195,13 +3231,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_text: {fileID: 281519045}
-  m_spinnerImage: {fileID: 594828283}
-  m_spinnerSprites:
-  - {fileID: 4119962745917396256, guid: 9f34f5abbd9ee754ab3ca0abd0d10a67, type: 3}
-  - {fileID: 2170199999713468650, guid: 9f34f5abbd9ee754ab3ca0abd0d10a67, type: 3}
-  - {fileID: -5649903290694681280, guid: 9f34f5abbd9ee754ab3ca0abd0d10a67, type: 3}
-  - {fileID: -3161852663661270998, guid: 9f34f5abbd9ee754ab3ca0abd0d10a67, type: 3}
+  m_imageTemplate: {fileID: 594828283}
+  m_sprites: {fileID: 11400000, guid: 17c26d93e8c41a749afb55df8ac7ccc2, type: 2}
   m_cycleDuration: 0.3
+  m_horizontalImageSpacing: 2
 --- !u!222 &1275869073
 CanvasRenderer:
   m_ObjectHideFlags: 0

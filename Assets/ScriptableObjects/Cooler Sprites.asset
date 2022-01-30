@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e34176dc70a65994aafface526ded9a4, type: 3}
+  m_Name: Cooler Sprites
+  m_EditorClassIdentifier: 
+  m_fanSprites:
+  - {fileID: 4119962745917396256, guid: 9f34f5abbd9ee754ab3ca0abd0d10a67, type: 3}
+  - {fileID: 2170199999713468650, guid: 9f34f5abbd9ee754ab3ca0abd0d10a67, type: 3}
+  - {fileID: -5649903290694681280, guid: 9f34f5abbd9ee754ab3ca0abd0d10a67, type: 3}
+  - {fileID: -3161852663661270998, guid: 9f34f5abbd9ee754ab3ca0abd0d10a67, type: 3}
+  m_iceSprites:
+  - {fileID: -9180697524848956812, guid: dbbcd843ba705fb40a99db53640735b3, type: 3}
+  - {fileID: 1498909226928758579, guid: dbbcd843ba705fb40a99db53640735b3, type: 3}
+  - {fileID: -4050558160231130804, guid: dbbcd843ba705fb40a99db53640735b3, type: 3}
+  - {fileID: -584923842075003788, guid: dbbcd843ba705fb40a99db53640735b3, type: 3}

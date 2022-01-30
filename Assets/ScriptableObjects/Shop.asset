@@ -80,15 +80,24 @@ MonoBehaviour:
       <slotSize>k__BackingField: 1
       <temperatureDelta>k__BackingField: 0
       <coolImpulseStrength>k__BackingField: 0.025
+      <spriteColumnCount>k__BackingField: 0
+      <useFanSprites>k__BackingField: 1
+      <useIceSprites>k__BackingField: 0
   - m_price: 2000
     m_info: Liquid-Cooling
     m_levelData:
       <slotSize>k__BackingField: 1
       <temperatureDelta>k__BackingField: 0
       <coolImpulseStrength>k__BackingField: 0.07
+      <spriteColumnCount>k__BackingField: 2
+      <useFanSprites>k__BackingField: 1
+      <useIceSprites>k__BackingField: 0
   - m_price: 11000
     m_info: Cryogenic Cooling
     m_levelData:
       <slotSize>k__BackingField: 2
       <temperatureDelta>k__BackingField: -35
       <coolImpulseStrength>k__BackingField: 0.08
+      <spriteColumnCount>k__BackingField: 3
+      <useFanSprites>k__BackingField: 1
+      <useIceSprites>k__BackingField: 1

@@ -24,6 +24,9 @@ namespace Cores.Components {
             [field: SerializeField] public int slotSize { get; private set; }
             [field: SerializeField] public float temperatureDelta { get; private set; }
             [field: SerializeField] public float coolImpulseStrength { get; private set; }
+            [field: SerializeField] public int spriteColumnCount { get; private set; }
+            [field: SerializeField] public bool useFanSprites { get; private set; }
+            [field: SerializeField] public bool useIceSprites { get; private set; }
 
             public static void EnsureLevelsInitialized (IEnumerable<Level> inputLevels) {
                 levels = levels ?? new List<Level>(inputLevels);

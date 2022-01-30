@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 9f34f5abbd9ee754ab3ca0abd0d10a67
+guid: dbbcd843ba705fb40a99db53640735b3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4119962745917396256
-    second: fan_sprites_0
+      213: -9180697524848956812
+    second: ice_sprites_0
   - first:
-      213: 2170199999713468650
-    second: fan_sprites_1
+      213: 1498909226928758579
+    second: ice_sprites_1
   - first:
-      213: -5649903290694681280
-    second: fan_sprites_2
+      213: -4050558160231130804
+    second: ice_sprites_2
   - first:
-      213: -3161852663661270998
-    second: fan_sprites_3
+      213: -584923842075003788
+    second: ice_sprites_3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -103,7 +103,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: fan_sprites_0
+      name: ice_sprites_0
       rect:
         serializedVersion: 2
         x: 0
@@ -117,14 +117,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 025df36f94c0d2930800000000000000
-      internalID: 4119962745917396256
+      spriteID: 47ae1191e3c979080800000000000000
+      internalID: -9180697524848956812
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fan_sprites_1
+      name: ice_sprites_1
       rect:
         serializedVersion: 2
         x: 13
@@ -138,14 +138,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ae0697ac6691e1e10800000000000000
-      internalID: 2170199999713468650
+      spriteID: 33fd4a510023dc410800000000000000
+      internalID: 1498909226928758579
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fan_sprites_2
+      name: ice_sprites_2
       rect:
         serializedVersion: 2
         x: 26
@@ -159,14 +159,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 04d35de34e28791b0800000000000000
-      internalID: -5649903290694681280
+      spriteID: c491d5560d689c7c0800000000000000
+      internalID: -4050558160231130804
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: fan_sprites_3
+      name: ice_sprites_3
       rect:
         serializedVersion: 2
         x: 39
@@ -180,8 +180,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a28e85e21c7de14d0800000000000000
-      internalID: -3161852663661270998
+      spriteID: 474767c5ddee1e7f0800000000000000
+      internalID: -584923842075003788
       vertices: []
       indices: 
       edges: []
@@ -189,7 +189,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 66162ca424b1b8b43ad59002e6774eab
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 

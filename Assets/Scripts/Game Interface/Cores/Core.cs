@@ -43,10 +43,13 @@ namespace Cores {
         public static Core GetInitialCore (System.Func<ID> getNewId) {
             var output = new Core();
             output.unlocked = true;
-            output.AddNewComponent<Processor>(getNewId(), 0);
-            output.AddNewComponent<Processor>(getNewId(), 1);
-            output.AddNewComponent<Processor>(getNewId(), 2);
+            // output.AddNewComponent<Processor>(getNewId(), 0);
+            // output.AddNewComponent<Processor>(getNewId(), 1);
+            // output.AddNewComponent<Processor>(getNewId(), 2);
             // output.AddNewComponent<Scheduler>(getNewId(), 0);
+            output.AddNewComponent<Cooler>(getNewId(), 0);
+            output.AddNewComponent<Cooler>(getNewId(), 1);
+            output.AddNewComponent<Cooler>(getNewId(), 2);
             return output;
         }
 
