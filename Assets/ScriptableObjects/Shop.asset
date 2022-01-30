@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49751f1cc46860641a934143ec0438b9, type: 3}
   m_Name: Shop
   m_EditorClassIdentifier: 
-  m_firstUnlockableCoreCost: 100
-  m_eachNewUnlockableCoreCostFactor: 10
+  m_firstUnlockableCoreCost: 250
+  m_eachNewUnlockableCoreCostFactor: 8
   m_processorPurchases:
-  - m_price: 40
-    m_upgradeCost: 20
+  - m_price: 160
+    m_upgradeCost: 80
     m_actualLevel:
       <slotSize>k__BackingField: 1
       <temperatureDelta>k__BackingField: 20
@@ -30,8 +30,8 @@ MonoBehaviour:
       - <maxTasksPerCycle>k__BackingField: 8
       - <maxTasksPerCycle>k__BackingField: 10
       - <maxTasksPerCycle>k__BackingField: 12
-  - m_price: 200
-    m_upgradeCost: 50
+  - m_price: 3200
+    m_upgradeCost: 1200
     m_actualLevel:
       <slotSize>k__BackingField: 2
       <temperatureDelta>k__BackingField: 50
@@ -45,8 +45,8 @@ MonoBehaviour:
       - <maxTasksPerCycle>k__BackingField: 60
       - <maxTasksPerCycle>k__BackingField: 70
       - <maxTasksPerCycle>k__BackingField: 80
-  - m_price: 1200
-    m_upgradeCost: 300
+  - m_price: 56000
+    m_upgradeCost: 20000
     m_actualLevel:
       <slotSize>k__BackingField: 3
       <temperatureDelta>k__BackingField: 90
@@ -74,30 +74,30 @@ MonoBehaviour:
       <slotSize>k__BackingField: 1
       <taskStackSize>k__BackingField: 20
   m_coolerPurchases:
-  - m_price: 500
+  - m_price: 2000
     m_info: Air-Cooling
     m_levelData:
       <slotSize>k__BackingField: 1
       <temperatureDelta>k__BackingField: 0
       <coolImpulseStrength>k__BackingField: 0.025
-      <spriteColumnCount>k__BackingField: 0
+      <spriteColumnCount>k__BackingField: 1
       <useFanSprites>k__BackingField: 1
       <useIceSprites>k__BackingField: 0
-  - m_price: 2000
+  - m_price: 45000
     m_info: Liquid-Cooling
     m_levelData:
       <slotSize>k__BackingField: 1
       <temperatureDelta>k__BackingField: 0
       <coolImpulseStrength>k__BackingField: 0.07
-      <spriteColumnCount>k__BackingField: 2
+      <spriteColumnCount>k__BackingField: 3
       <useFanSprites>k__BackingField: 1
       <useIceSprites>k__BackingField: 0
-  - m_price: 11000
+  - m_price: 130000
     m_info: Cryogenic Cooling
     m_levelData:
-      <slotSize>k__BackingField: 2
+      <slotSize>k__BackingField: 1
       <temperatureDelta>k__BackingField: -35
       <coolImpulseStrength>k__BackingField: 0.08
       <spriteColumnCount>k__BackingField: 3
-      <useFanSprites>k__BackingField: 1
+      <useFanSprites>k__BackingField: 0
       <useIceSprites>k__BackingField: 1
