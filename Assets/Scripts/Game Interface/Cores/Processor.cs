@@ -48,6 +48,7 @@ namespace Cores.Components {
             [field: SerializeField] public int slotSize { get; private set; }
             [field: SerializeField] public float temperatureDelta { get; private set; }
             [field: SerializeField] public float heatImpulseStrength { get; private set; }
+            [field: SerializeField, InlineProperty] public ProcessorView.LevelGaugeSetup gaugeSetup { get; private set; }
             [SerializeField, InlineProperty] private SubLevel[] m_subLevels;
 
             public IReadOnlyList<SubLevel> subLevels => m_subLevels;

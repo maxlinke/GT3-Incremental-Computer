@@ -21,6 +21,9 @@ MonoBehaviour:
       <slotSize>k__BackingField: 1
       <temperatureDelta>k__BackingField: 20
       <heatImpulseStrength>k__BackingField: 0.01
+      <gaugeSetup>k__BackingField:
+        <usageGaugeWidthMultiplier>k__BackingField: 1
+        <usageGaugeColumnCount>k__BackingField: 1
       m_subLevels:
       - <maxTasksPerCycle>k__BackingField: 4
       - <maxTasksPerCycle>k__BackingField: 6
@@ -33,6 +36,9 @@ MonoBehaviour:
       <slotSize>k__BackingField: 2
       <temperatureDelta>k__BackingField: 50
       <heatImpulseStrength>k__BackingField: 0.025
+      <gaugeSetup>k__BackingField:
+        <usageGaugeWidthMultiplier>k__BackingField: 1.1
+        <usageGaugeColumnCount>k__BackingField: 2
       m_subLevels:
       - <maxTasksPerCycle>k__BackingField: 40
       - <maxTasksPerCycle>k__BackingField: 50
@@ -45,6 +51,9 @@ MonoBehaviour:
       <slotSize>k__BackingField: 3
       <temperatureDelta>k__BackingField: 90
       <heatImpulseStrength>k__BackingField: 0.05
+      <gaugeSetup>k__BackingField:
+        <usageGaugeWidthMultiplier>k__BackingField: 1.25
+        <usageGaugeColumnCount>k__BackingField: 3
       m_subLevels:
       - <maxTasksPerCycle>k__BackingField: 240
       - <maxTasksPerCycle>k__BackingField: 300
