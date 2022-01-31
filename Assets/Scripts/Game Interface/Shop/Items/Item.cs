@@ -4,7 +4,8 @@ namespace Shops {
 
         public virtual bool CurrentlyPurchaseable (out string message) {
             if(GameState.current.currency < price){
-                message = $"Not enough {GameState.CURRENCY_SYMBOL}.";
+                var neededAmount = price - GameState.current.currency;
+                message = $"Not enough {GameState.CURRENCY_SYMBOL} (need {neededAmount} more).";
                 return false;
             }
             message = default;
