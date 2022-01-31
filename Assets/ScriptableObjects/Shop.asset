@@ -151,7 +151,7 @@ MonoBehaviour:
         <useFanSprites>k__BackingField: 1
         <useIceSprites>k__BackingField: 0
   - m_price: 45000
-    m_info: Liquid-Cooling
+    m_info: High-Performance Air-Cooling
     m_levelData:
       <slotSize>k__BackingField: 1
       <temperatureDelta>k__BackingField: 0

@@ -23,6 +23,7 @@ namespace Cores.Components {
         bool m_updateImage;
         bool m_newImageState;
         Image[] m_blipImages;
+        bool m_initialized;
 
         public override void Initialize (Scheduler scheduler) {
             base.Initialize(scheduler);
@@ -31,6 +32,14 @@ namespace Cores.Components {
             scheduler.onUpgrade += OnUpgraded;
             InitImages();
             OnUpgraded(scheduler.upgradeCount);
+            m_initialized = true;
+        }
+
+        void OnDestroy () {
+            if(m_initialized){
+                scheduler.onExecute -= OnExecute;
+                scheduler.onUpgrade -= OnUpgraded;
+            }
         }
 
         void InitImages () {

@@ -23,6 +23,7 @@ namespace Cores.Components {
         bool m_newImageState;
         float m_usageLevel;
         bool m_executing;
+        bool m_initialized;
 
         public override void Initialize (Processor processor) {
             base.Initialize(processor);
@@ -31,6 +32,14 @@ namespace Cores.Components {
             processor.onUpgraded += OnUpgraded;
             InitGauges();
             OnUpgraded(processor.upgradeCount);
+            m_initialized = true;
+        }
+
+        void OnDestroy () {
+            if(m_initialized){
+                processor.onExecute -= OnExecute;
+                processor.onUpgraded -= OnUpgraded;
+            }
         }
 
         void InitGauges () {

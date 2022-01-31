@@ -11,7 +11,7 @@ namespace Shops.Items {
         [SerializeField, InlineProperty] Cooler.Level m_levelData;
 
         public Cooler.Level levelData => m_levelData;
-        public override string info => m_info;
+        public override string info => $"{levelData.slotSize} Slots\n{m_info}";
         protected override int slotSize => m_levelData.slotSize;
 
         protected override void OnPurchased(Core targetCore) {
