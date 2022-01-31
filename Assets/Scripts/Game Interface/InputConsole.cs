@@ -107,6 +107,7 @@ public class InputConsole : MonoBehaviour, IScrollHandler {
         m_activeText.text = message;
         ApplyAndCloneActiveText();
         m_activeText.text = textCache;
+        ResetScroll();
     }
 
     void SubmitLine () {

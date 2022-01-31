@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour {
 
     const string CHEAT_COMMAND_ARG = "enable_cheats";
     public const string AUTOSAVE_FILENAME = "autoSave";
+    public const int MIN_HOURS_FOR_WELCOME_BACK_BONUS = 6;
+    public const float WELCOME_BACK_BONUS_PERCENTAGE = 0.1f;
 
     [SerializeField, RedIfEmpty] InputHandler m_inputHandler;
     [SerializeField, RedIfEmpty] GameInterface m_interface;

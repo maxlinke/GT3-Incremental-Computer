@@ -140,7 +140,7 @@ public class ShopDisplay : MonoBehaviour {
         }
     }
 
-    private static int GetPriceOfComponent (Cores.Components.CoreComponent component) {
+    public static int GetPriceOfComponent (Cores.Components.CoreComponent component) {
         if(instance.m_shop.TryGetBuyItemForComponent(component, out var item)){
             var output = item.price;
             return output;

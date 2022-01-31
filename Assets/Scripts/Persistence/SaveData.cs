@@ -84,14 +84,20 @@ public class SaveData {
         }
         try{
             GameState.current = m_gameState;
-            if(this.m_isAutoSave){
-                if(GameState.current.running){
+            // if(this.m_isAutoSave){
+                if(GameState.current.hasRun){
                     var lastSaveTime = System.DateTime.FromBinary(m_timeStampBinary);
                     var timeSpan = System.DateTime.Now - lastSaveTime;
-                    // TODO give (a little bit) of currency, depending on the processor output last time
-                    Debug.Log($"TODO this\n{timeSpan}");
+                    if(timeSpan.TotalHours >= GameManager.MIN_HOURS_FOR_WELCOME_BACK_BONUS){
+                        var bonusMoney = Mathf.RoundToInt(GameState.current.GetTotalWealth() * GameManager.WELCOME_BACK_BONUS_PERCENTAGE);
+                        GameState.current.currency += bonusMoney;
+                        InputConsole.instance.PrintMessage("                <<<< Welcome back! >>>>");
+                        InputConsole.instance.PrintMessage("");
+                        InputConsole.instance.PrintMessage($"Here's {bonusMoney} {GameState.CURRENCY_SYMBOL} as a little welcome-back-gift!");
+                        InputConsole.instance.PrintMessage("");
+                    }
                 }
-            }
+            // }
             errorMessage = default;
             return true;
         }catch(System.Exception e){

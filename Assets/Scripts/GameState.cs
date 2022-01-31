@@ -113,4 +113,14 @@ public class GameState {
         return core != default;
     }
 
+    public int GetTotalWealth () {
+        var output = currency;
+        foreach(var core in cores){
+            foreach(var component in core.components){
+                output += ShopDisplay.GetPriceOfComponent(component);
+            }
+        }
+        return output;
+    }
+
 }
