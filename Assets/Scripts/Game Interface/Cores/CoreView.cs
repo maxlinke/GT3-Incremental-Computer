@@ -10,11 +10,6 @@ namespace Cores {
 
     public class CoreView : MonoBehaviour {
 
-        // TODO heat
-        // TODO proper values
-        // TODO proper adding and removing (giving back ids) of components
-        // TODO maybe start/end execution cycle -> image on the entire time?
-
         public static Color GetUnlockStateColor (bool unlocked) => unlocked ? onColor : offColor;
 
         public static readonly Color onColor = new Color(1f, 1f, 1f, 1f);
@@ -125,6 +120,7 @@ namespace Cores {
             foreach(var cool in core.coolers){
                 AddComponent(cool);
             }
+            m_redoInternalLayout = true;
         }
 
         void AddComponent (CoreComponent component) {
