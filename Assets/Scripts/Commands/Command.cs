@@ -25,6 +25,7 @@ namespace Commands {
             new MoveCommand(){id = "move"},
             new SaveCommand(){id = "save"},
             new LoadCommand(){id = "load"},
+            new ResetCommand(){id = "reset"},
             new ExitCommand(){id = "exit"},
         };
 
