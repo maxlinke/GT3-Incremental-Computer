@@ -11,6 +11,10 @@ namespace Commands {
         } }
 
         protected override bool TryExecute(string[] parameters, out string message) {
+#if UNITY_WEBGL
+            message = "This command is disabled in WebGL builds";
+            return false;
+#endif
             var fileName = ((parameters.Length > 0) ? parameters[0] : default);
             if(string.IsNullOrWhiteSpace(fileName)){
                 message = "Please specify a proper file name!";
